@@ -4,6 +4,7 @@
      <the-header label="Databaze sachovych partii"/>
      <database-loader/>
      <games-table/>
+     <chessboard-wrapper/>
     </div>
   </div>
 </template>
@@ -12,6 +13,7 @@
 import TheHeader from './components/TheHeader.vue';
 import DatabaseLoader from './components/DatabaseLoader.vue';
 import GamesTable from './components/GamesTable.vue';
+import ChessboardWrapper from './components/ChessboardWrapper.vue';
 
 export default {
   name: 'App',
@@ -19,8 +21,8 @@ export default {
     TheHeader,
     DatabaseLoader,
     GamesTable,
+    ChessboardWrapper,
   },
-
 }
 </script>
 
