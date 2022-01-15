@@ -1,5 +1,29 @@
 <template>
   <div>
+    <input
+      type="text"
+      placeholder="Jméno..."
+      class="table-search-filters"
+      v-model="nameSearch"
+      v-on:keyup="filterGames"
+    />
+    <input type="checkbox" v-model="ignoreColours" v-on:change="filterGames" />
+    Ignorovat barvu figur <br />
+
+    <input
+      type="text"
+      placeholder="Turnaj..."
+      class="table-search-filters"
+      v-model="tournamentSearch"
+      v-on:keyup="filterGames"
+    />
+    <input
+      type="text"
+      placeholder="Zahájení..."
+      class="table-search-filters"
+      v-model="openingSearch"
+      v-on:keyup="filterGames"
+    />
     <table>
       <tr id="row-1">
         <th>Bílý</th>
@@ -30,19 +54,35 @@
         <td>{{ game.date }}</td>
       </tr>
     </table>
+    <chessboard-wrapper v-bind:chess-game="this.chosenGame" />
   </div>
 </template>
 
+
 <script>
+import ChessboardWrapper from "./ChessboardWrapper.vue";
+
 export default {
   name: "GamesTable",
+  components: {
+    ChessboardWrapper,
+  },
   methods: {
     onGameClick(id) {
       console.log("game" + id + " chosen");
+      this.chosenGame = this.games[id].pgnFile;
+    },
+    filterGames() {
+      console.log("filtering games");
     },
   },
   data() {
     return {
+      nameSearch: "",
+      tournamentSearch: "",
+      openingSearch: "",
+      ignoreColours: false,
+      chosenGame: "",
       games: [
         {
           id: 1,
@@ -55,6 +95,7 @@ export default {
           opening: "",
           tournament: "krajsky prebor zakovskych druzstev Hradec Kralove",
           date: "12.5.2020",
+          pgnFile: "e4, e5, Jf3, Jc6",
         },
         {
           id: 2,
@@ -67,6 +108,7 @@ export default {
           opening: "C40",
           tournament: "krajsky prebor",
           date: "12.5.2020",
+          pgnFile: "Se4, e5, Jf3, Jc6",
         },
       ],
     };

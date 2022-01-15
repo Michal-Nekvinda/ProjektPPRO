@@ -1,29 +1,26 @@
 <template>
   <div id="app">
     <div>
-     <the-header label="Databaze sachovych partii"/>
-     <database-loader/>
-     <games-table/>
-     <chessboard-wrapper/>
+      <the-header label="Databaze sachovych partii" />
+      <database-loader />
+      <games-table />
     </div>
   </div>
 </template>
 
 <script>
-import TheHeader from './components/TheHeader.vue';
-import DatabaseLoader from './components/DatabaseLoader.vue';
-import GamesTable from './components/GamesTable.vue';
-import ChessboardWrapper from './components/ChessboardWrapper.vue';
+import TheHeader from "./components/TheHeader.vue";
+import DatabaseLoader from "./components/DatabaseLoader.vue";
+import GamesTable from "./components/GamesTable.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     TheHeader,
     DatabaseLoader,
     GamesTable,
-    ChessboardWrapper,
   },
-}
+};
 </script>
 
 <style>
