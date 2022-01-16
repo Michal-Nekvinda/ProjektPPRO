@@ -3,7 +3,6 @@
     <div class="chessBoardStyle" id="chessboard" style="width: 400px"></div>
     <textarea
       class="textAreaStyle"
-      id="w3review"
       name="chessGameView"
       rows="20"
       cols="50"
@@ -14,6 +13,17 @@
     <div class="controlPanel">
       <button class="buttonStyle" @click="moveBackward">Předchozí</button>
       <button class="buttonStyle" @click="moveForward">Další</button>
+      <button class="buttonStyle" @click="newGame">Nová hra</button>
+      <button class="buttonStyle" @click="addComment">
+        Přidat komentář k tahu
+      </button>
+    </div>
+    <div class="formPopup" id="popupForm">
+      <textarea name="comment" rows="10" cols="20" v-model="moveComment">
+      </textarea>
+
+      <button class="btn">Vložit</button>
+      <button type="button" class="btn" onclick="closeForm()">Zavřít</button>
     </div>
   </div>
 </template>
@@ -31,6 +41,7 @@ export default {
   props: {
     chessGame: String,
   },
+
   methods: {
     moveForward() {
       this.movesReader.move(this.moves[this.index]);
@@ -43,9 +54,17 @@ export default {
       this.board.position(this.movesReader.fen());
     },
 
-    reverseMove(move) {
-      const fromTo = move.split("-");
-      return fromTo[1] + "-" + fromTo[0];
+    newGame() {
+      var config = {
+        draggable: true,
+        dropOffBoard: "snapback", // this is the default
+        position: "start",
+      };
+      this.board = ChessBoard("chessboard", config);
+    },
+    addComment() {},
+    setupBoard() {
+      this.board = ChessBoard("chessboard", "start");
     },
   },
   data() {
@@ -54,6 +73,7 @@ export default {
       movesReader: null,
       moves: ["e4", "d5", "exd5", "Nc6", "dxc6"],
       index: 0,
+      moveComment: "",
     };
   },
 };

@@ -1,5 +1,6 @@
 <template>
   <div>
+    Najít
     <input
       type="text"
       placeholder="Jméno..."
@@ -39,8 +40,11 @@
 
       <tr
         class="dataRow"
-        @click="onGameClick(game.id)"
-        v-for="game in games"
+        @click="
+          onGameClick(game.id);
+          $refs.chessboardWrapper.setupBoard();
+        "
+        v-for="game in displayedGames"
         :key="game.id"
       >
         <td>{{ game.white }}</td>
@@ -54,7 +58,10 @@
         <td>{{ game.date }}</td>
       </tr>
     </table>
-    <chessboard-wrapper v-bind:chess-game="this.chosenGame" />
+    <chessboard-wrapper
+      v-bind:chess-game="this.chosenGame"
+      ref="chessboardWrapper"
+    />
   </div>
 </template>
 
@@ -70,10 +77,40 @@ export default {
   methods: {
     onGameClick(id) {
       console.log("game" + id + " chosen");
-      this.chosenGame = this.games[id].pgnFile;
+      this.chosenGame = this.games[id - 1].pgnFile;
     },
     filterGames() {
-      console.log("filtering games");
+      var newDisplayedGames = [];
+      for (let i = 0; i < this.games.length; i++) {
+        const game = this.games[i];
+
+        if (this.shouldDisplayGame(game)) {
+          newDisplayedGames.push(game);
+        }
+      }
+
+      this.displayedGames = newDisplayedGames;
+    },
+    shouldDisplayGame(game) {
+      if (
+        !game.tournament
+          .toLowerCase()
+          .includes(this.tournamentSearch.toLowerCase())
+      ) {
+        return false;
+      }
+      if (
+        !game.opening.toLowerCase().includes(this.openingSearch.toLowerCase())
+      ) {
+        return false;
+      }
+      if (
+        !game.white.toLowerCase().includes(this.nameSearch.toLowerCase()) &&
+        !game.black.toLowerCase().includes(this.nameSearch.toLowerCase())
+      ) {
+        return false;
+      }
+      return true;
     },
   },
   data() {
@@ -84,6 +121,34 @@ export default {
       ignoreColours: false,
       chosenGame: "",
       games: [
+        {
+          id: 1,
+          white: "Ja",
+          whiteElo: "1600",
+          black: "John Smith",
+          blackElo: "1545",
+          result: "1-0",
+          moves: "50",
+          opening: "",
+          tournament: "krajsky prebor zakovskych druzstev Hradec Kralove",
+          date: "12.5.2020",
+          pgnFile: "e4, e5, Jf3, Jc6",
+        },
+        {
+          id: 2,
+          white: "Ja",
+          whiteElo: "1700",
+          black: "Jack",
+          blackElo: "1750",
+          result: "0,5-0,5",
+          moves: "60",
+          opening: "C40",
+          tournament: "krajsky prebor",
+          date: "12.5.2020",
+          pgnFile: "Se4, e5, Jf3, Jc6",
+        },
+      ],
+      displayedGames: [
         {
           id: 1,
           white: "Ja",
