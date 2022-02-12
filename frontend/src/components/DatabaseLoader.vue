@@ -17,21 +17,38 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   name: "DatabaseLoader",
   data() {
     return {
+      formData: null,
       selectedFile: null,
+      filexData: {
+        name: "myName",
+        data: "",
+      },
     };
   },
   methods: {
     onFileSelected(event) {
-      this.selectedFile = event.target.files[0];
+      let file = event.target.files[0];
+      this.formData = new FormData();
+      this.formData.append("file", file);
+      console.log(file.name);
     },
     onUpload() {
-      const fd = new FormData();
-      fd.append("database", this.selectedFile, this.selectedFile.name);
-      console.log("send data to BE...");
+      axios({
+        url: "http://localhost:8080/api/database",
+        method: "POST",
+        data: this.formData,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
+        },
+      }).then((response) => {
+        console.log(response.data);
+      });
     },
   },
 };

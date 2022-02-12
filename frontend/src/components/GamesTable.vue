@@ -62,17 +62,20 @@
       v-bind:chess-game="this.chosenGame"
       ref="chessboardWrapper"
     />
+    <games-statistics v-bind:games="this.displayedGames" />
   </div>
 </template>
 
 
 <script>
 import ChessboardWrapper from "./ChessboardWrapper.vue";
+import GamesStatistics from "./GamesStatistics.vue";
 
 export default {
   name: "GamesTable",
   components: {
     ChessboardWrapper,
+    GamesStatistics,
   },
   methods: {
     onGameClick(id) {

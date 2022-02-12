@@ -1,6 +1,6 @@
 package cz.uhk.nekvimi.chessdatabase;
 
-public class PngFile {
+public class PgnFile {
     public String name;
     public String content;
 

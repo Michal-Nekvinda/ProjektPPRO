@@ -10,8 +10,22 @@ public class ChessGameData {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-
     String data;
+
+    public ChessGameData(String data) {
+        this.data = data;
+    }
+
+    public ChessGameData() {
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
 
     public String getData() {
         return data;
@@ -20,5 +34,4 @@ public class ChessGameData {
     public void setData(String data) {
         this.data = data;
     }
-
 }
