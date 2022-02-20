@@ -1,9 +1,10 @@
 package cz.uhk.nekvimi.chessdatabase;
 
+import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
 
-public interface ChessDatabaseParser {
-    List<String> splitToIndividualGames(String games);
-    Map<String, String> parseGame(String game);
+public interface ChessDatabaseParser<K, V> {
+    ChessGame<K, V> parseToChessGame(String game);
+
+    List<String> splitDbToIndividualGames(InputStream gamesFile);
 }

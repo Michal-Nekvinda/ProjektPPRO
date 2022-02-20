@@ -1,11 +1,12 @@
 package cz.uhk.nekvimi.chessdatabase;
 
-public enum SupportedKeysInGameHeader {
+public enum PgnTag {
     BLACK_NAME("Black"),
     WHITE_NAME("White"),
     BLACK_ELO("BlackElo"),
     WHITE_ELO("WhiteElo"),
     TOURNAMENT("Event"),
+    SITE("Site"),
     RESULT("Result"),
     ROUND("Round"),
     ECO("ECO"),
@@ -13,7 +14,11 @@ public enum SupportedKeysInGameHeader {
     GAME_RECORD("Game");
 
     private String key;
-    SupportedKeysInGameHeader(String key) {
+    PgnTag(String key) {
         this.key = key;
+    }
+
+    public String getKey() {
+        return key;
     }
 }

@@ -1,77 +1,40 @@
 package cz.uhk.nekvimi.chessdatabase.entity;
 
-import cz.uhk.nekvimi.chessdatabase.Winner;
+import cz.uhk.nekvimi.chessdatabase.Result;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import java.util.Date;
 
 @Entity
 public class ChessGameInfo {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     long id;
-    @ManyToOne
-    Player white;
-    @ManyToOne
-    Player black;
-    Winner winner;
-    long gameDataId;
     String eco;
-    String tournament;
+    Result result;
+    @Column(length = 5_000)
+    String game_record;
     String date;
-    String round;
 
     public ChessGameInfo() {
     }
 
-    public ChessGameInfo(Player white, Player black, Winner winner, long gameDataId, String eco, String tournament, String date, String round) {
-        this.white = white;
-        this.black = black;
-        this.winner = winner;
-        this.gameDataId = gameDataId;
+    public ChessGameInfo(String eco, Result result, String game_record, String date) {
         this.eco = eco;
-        this.tournament = tournament;
+        this.result = result;
+        this.game_record = game_record;
         this.date = date;
-        this.round = round;
     }
 
+    @Id
+    @GeneratedValue
     public long getId() {
         return id;
     }
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public Player getWhite() {
-        return white;
-    }
-
-    public void setWhite(Player white) {
-        this.white = white;
-    }
-
-    public Player getBlack() {
-        return black;
-    }
-
-    public void setBlack(Player black) {
-        this.black = black;
-    }
-
-    public Winner getWinner() {
-        return winner;
-    }
-
-    public void setWinner(Winner winner) {
-        this.winner = winner;
-    }
-
-    public long getGameDataId() {
-        return gameDataId;
-    }
-
-    public void setGameDataId(long gameDataId) {
-        this.gameDataId = gameDataId;
     }
 
     public String getEco() {
@@ -82,12 +45,20 @@ public class ChessGameInfo {
         this.eco = eco;
     }
 
-    public String getTournament() {
-        return tournament;
+    public Result getResult() {
+        return result;
     }
 
-    public void setTournament(String tournament) {
-        this.tournament = tournament;
+    public void setResult(Result result) {
+        this.result = result;
+    }
+
+    public String getGame_record() {
+        return game_record;
+    }
+
+    public void setGame_record(String game_record) {
+        this.game_record = game_record;
     }
 
     public String getDate() {
@@ -96,13 +67,5 @@ public class ChessGameInfo {
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public String getRound() {
-        return round;
-    }
-
-    public void setRound(String round) {
-        this.round = round;
     }
 }

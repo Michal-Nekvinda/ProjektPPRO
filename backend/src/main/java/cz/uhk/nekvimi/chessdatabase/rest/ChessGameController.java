@@ -1,49 +1,51 @@
 package cz.uhk.nekvimi.chessdatabase.rest;
 
-import cz.uhk.nekvimi.chessdatabase.PgnFile;
-import cz.uhk.nekvimi.chessdatabase.ChessGameRepository;
-import cz.uhk.nekvimi.chessdatabase.ChessGamesSaver;
-import cz.uhk.nekvimi.chessdatabase.PgnParser;
-import cz.uhk.nekvimi.chessdatabase.dto.ChessGamesInfoDto;
-import cz.uhk.nekvimi.chessdatabase.entity.ChessGameInfo;
+import cz.uhk.nekvimi.chessdatabase.*;
+import cz.uhk.nekvimi.chessdatabase.dto.ChessGamePreviewDto;
+import cz.uhk.nekvimi.chessdatabase.entity.ChessGameDb;
+import cz.uhk.nekvimi.chessdatabase.entity.myFakeEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins="*", allowedHeaders = "*")
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ChessGameController {
-    ChessGameRepository chessGameRepository;
-    ChessGamesSaver chessGamesSaver;
+    BlaRepo repo;
+    ChessGameDbRepository repository;
+    ChessDatabaseParser<PgnTag, String> databaseParser;
+    ChessGameConverter<PgnTag, String> converter;
 
-    public ChessGameController(ChessGameRepository chessGameRepository){
-        this.chessGameRepository = chessGameRepository;
+    public ChessGameController(ChessGameDbRepository repository, BlaRepo repo) {
+        this.repository = repository;
+        this.repo = repo;
     }
 
     @GetMapping("/api/chessGames")
-    public List<ChessGameInfo> findAll(){
-
-        return chessGameRepository.findAll();
+    public List<ChessGameDb> findAll() {
+        return repository.findAll();
     }
 
     @PostMapping("/api/database")
-    public ChessGamesInfoDto create(@RequestParam("file") MultipartFile pgnFile){
-        try {
-            String pgnContent = new String(pgnFile.getInputStream().readAllBytes(), Charset.forName("Cp1252"));
-            ChessGamesSaver chessGamesSaver = new ChessGamesSaver(new PgnParser());
-            var newGamesInfoDto = chessGamesSaver.saveChessGames(pgnContent);
-            return newGamesInfoDto;
+    public List<ChessGameDb> saveGames(@RequestParam("file") MultipartFile pgnFile) {
 
+        databaseParser = new PgnDatabaseParser(Charset.forName("Cp1252"));
+        converter = new PgnGameConverter();
+        List<ChessGameDb> gameDtos = new ArrayList<>();
+        ChessGamePreviewDto newGamesInfoDto = null;
+        try {
+            for (String game : databaseParser.splitDbToIndividualGames(pgnFile.getInputStream())) {
+                var chessGame = databaseParser.parseToChessGame(game);
+                repository.save(converter.convertToChessGameDb(chessGame));
+                gameDtos.add(converter.convertToChessGameDb(chessGame));
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return null;
+        return gameDtos;
     }
 }
