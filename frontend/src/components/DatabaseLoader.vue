@@ -47,6 +47,7 @@ export default {
           "Content-Type": "multipart/form-data",
         },
       }).then((response) => {
+        this.$parent.addGames(response.data);
         console.log(response.data);
       });
     },

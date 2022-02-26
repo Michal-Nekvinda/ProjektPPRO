@@ -1,5 +1,6 @@
 <template>
   <div>
+    <database-loader />
     Najít
     <input
       type="text"
@@ -32,10 +33,8 @@
         <th>Černý</th>
         <th>Elo</th>
         <th>Výsledek</th>
-        <th>Tahy</th>
         <th>Zahájení</th>
         <th>Turnaj</th>
-        <th>Datum</th>
       </tr>
 
       <tr
@@ -47,15 +46,13 @@
         v-for="game in displayedGames"
         :key="game.id"
       >
-        <td>{{ game.white }}</td>
+        <td>{{ game.whiteName }}</td>
         <td>{{ game.whiteElo }}</td>
-        <td>{{ game.black }}</td>
+        <td>{{ game.blackName }}</td>
         <td>{{ game.blackElo }}</td>
         <td>{{ game.result }}</td>
-        <td>{{ game.moves }}</td>
-        <td>{{ game.opening }}</td>
-        <td>{{ game.tournament }}</td>
-        <td>{{ game.date }}</td>
+        <td>{{ game.eco }}</td>
+        <td>{{ game.tournamentName }}</td>
       </tr>
     </table>
     <chessboard-wrapper
@@ -70,14 +67,23 @@
 <script>
 import ChessboardWrapper from "./ChessboardWrapper.vue";
 import GamesStatistics from "./GamesStatistics.vue";
+import DatabaseLoader from "./DatabaseLoader.vue";
 
 export default {
   name: "GamesTable",
+  props: {},
   components: {
     ChessboardWrapper,
     GamesStatistics,
+    DatabaseLoader,
   },
   methods: {
+    addGames(gamesFromDb) {
+      for (let i = 0; i < gamesFromDb.length; i++) {
+        this.games.push(gamesFromDb[i]);
+      }
+      this.filterGames();
+    },
     onGameClick(id) {
       console.log("game" + id + " chosen");
       this.chosenGame = this.games[id - 1].pgnFile;
@@ -96,20 +102,22 @@ export default {
     },
     shouldDisplayGame(game) {
       if (
-        !game.tournament
+        game.tournamentName == null ||
+        !game.tournamentName
           .toLowerCase()
           .includes(this.tournamentSearch.toLowerCase())
       ) {
         return false;
       }
       if (
-        !game.opening.toLowerCase().includes(this.openingSearch.toLowerCase())
+        game.eco == null ||
+        !game.eco.toLowerCase().includes(this.openingSearch.toLowerCase())
       ) {
         return false;
       }
       if (
-        !game.white.toLowerCase().includes(this.nameSearch.toLowerCase()) &&
-        !game.black.toLowerCase().includes(this.nameSearch.toLowerCase())
+        !game.whiteName.toLowerCase().includes(this.nameSearch.toLowerCase()) &&
+        !game.blackName.toLowerCase().includes(this.nameSearch.toLowerCase())
       ) {
         return false;
       }
@@ -123,62 +131,8 @@ export default {
       openingSearch: "",
       ignoreColours: false,
       chosenGame: "",
-      games: [
-        {
-          id: 1,
-          white: "Ja",
-          whiteElo: "1600",
-          black: "John Smith",
-          blackElo: "1545",
-          result: "1-0",
-          moves: "50",
-          opening: "",
-          tournament: "krajsky prebor zakovskych druzstev Hradec Kralove",
-          date: "12.5.2020",
-          pgnFile: "e4, e5, Jf3, Jc6",
-        },
-        {
-          id: 2,
-          white: "Ja",
-          whiteElo: "1700",
-          black: "Jack",
-          blackElo: "1750",
-          result: "0,5-0,5",
-          moves: "60",
-          opening: "C40",
-          tournament: "krajsky prebor",
-          date: "12.5.2020",
-          pgnFile: "Se4, e5, Jf3, Jc6",
-        },
-      ],
-      displayedGames: [
-        {
-          id: 1,
-          white: "Ja",
-          whiteElo: "1600",
-          black: "John Smith",
-          blackElo: "1545",
-          result: "1-0",
-          moves: "50",
-          opening: "",
-          tournament: "krajsky prebor zakovskych druzstev Hradec Kralove",
-          date: "12.5.2020",
-          pgnFile: "e4, e5, Jf3, Jc6",
-        },
-        {
-          id: 2,
-          white: "Ja",
-          whiteElo: "1700",
-          black: "Jack",
-          blackElo: "1750",
-          result: "0,5-0,5",
-          moves: "60",
-          opening: "C40",
-          tournament: "krajsky prebor",
-          date: "12.5.2020",
-          pgnFile: "Se4, e5, Jf3, Jc6",
-        },
-      ],
+      games: [],
+      displayedGames: [],
     };
   },
 };

@@ -26,7 +26,8 @@ public class PgnGameConverter implements ChessGameConverter<PgnTag, String> {
                 chessGame.getGamePart(PgnTag.BLACK_NAME),
                 chessGame.getGamePart(PgnTag.BLACK_ELO),
                 chessGame.getGamePart(PgnTag.RESULT),
-                chessGame.getGamePart(PgnTag.ECO));
+                chessGame.getGamePart(PgnTag.ECO),
+                chessGame.getGamePart(PgnTag.TOURNAMENT));
     }
 
     private PlayerInfo getPlayerInfo(ChessGame<PgnTag, String> chessGame, boolean white) {
