@@ -11,7 +11,9 @@
       <button class="buttonStyle" @click="$refs.fileInput.click()">
         Vybrat soubor
       </button>
-      <button class="buttonStyle" @click="onUpload">Nahrát</button>
+      <button class="buttonStyle" @click="onUpload" v-if="selectedFile != null">
+        Nahrát
+      </button>
     </div>
   </div>
 </template>
@@ -24,18 +26,13 @@ export default {
     return {
       formData: null,
       selectedFile: null,
-      filexData: {
-        name: "myName",
-        data: "",
-      },
     };
   },
   methods: {
     onFileSelected(event) {
-      let file = event.target.files[0];
+      this.selectedFile = event.target.files[0];
       this.formData = new FormData();
-      this.formData.append("file", file);
-      console.log(file.name);
+      this.formData.append("file", this.selectedFile);
     },
     onUpload() {
       axios({
@@ -48,7 +45,6 @@ export default {
         },
       }).then((response) => {
         this.$parent.addGames(response.data);
-        console.log(response.data);
       });
     },
   },

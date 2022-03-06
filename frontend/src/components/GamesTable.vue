@@ -39,10 +39,7 @@
 
       <tr
         class="dataRow"
-        @click="
-          onGameClick(game.id);
-          $refs.chessboardWrapper.setupBoard();
-        "
+        @click="onGameClick(game.id)"
         v-for="game in displayedGames"
         :key="game.id"
       >
@@ -52,13 +49,10 @@
         <td>{{ game.blackElo }}</td>
         <td>{{ game.result }}</td>
         <td>{{ game.eco }}</td>
-        <td>{{ game.tournamentName }}</td>
+        <td>{{ game.tournament }}</td>
       </tr>
     </table>
-    <chessboard-wrapper
-      v-bind:chess-game="this.chosenGame"
-      ref="chessboardWrapper"
-    />
+    <chessboard-wrapper ref="chessboardWrapper" />
     <games-statistics v-bind:games="this.displayedGames" />
   </div>
 </template>
@@ -68,10 +62,10 @@
 import ChessboardWrapper from "./ChessboardWrapper.vue";
 import GamesStatistics from "./GamesStatistics.vue";
 import DatabaseLoader from "./DatabaseLoader.vue";
+import axios from "axios";
 
 export default {
   name: "GamesTable",
-  props: {},
   components: {
     ChessboardWrapper,
     GamesStatistics,
@@ -84,10 +78,19 @@ export default {
       }
       this.filterGames();
     },
+
     onGameClick(id) {
-      console.log("game" + id + " chosen");
-      this.chosenGame = this.games[id - 1].pgnFile;
+      axios({
+        url: "http://localhost:8080/api/getChessGame",
+        method: "GET",
+        params: {
+          ID: id,
+        },
+      }).then((response) => {
+        this.$refs.chessboardWrapper.setupBoard(response.data);
+      });
     },
+
     filterGames() {
       var newDisplayedGames = [];
       for (let i = 0; i < this.games.length; i++) {
@@ -102,8 +105,8 @@ export default {
     },
     shouldDisplayGame(game) {
       if (
-        game.tournamentName == null ||
-        !game.tournamentName
+        game.tournament == null ||
+        !game.tournament
           .toLowerCase()
           .includes(this.tournamentSearch.toLowerCase())
       ) {
