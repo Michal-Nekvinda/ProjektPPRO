@@ -1,7 +1,5 @@
 package cz.uhk.nekvimi.chessdatabase.entity;
 
-import cz.uhk.nekvimi.chessdatabase.Pieces;
-
 import javax.persistence.*;
 
 @Entity
@@ -22,10 +20,18 @@ public class ChessGameDb {
     }
 
     public ChessGameDb(PlayerInfo white, PlayerInfo black, ChessGameInfo chessGameInfo, TournamentInfo tournamentInfo) {
-        setWhite(white);
-        setBlack(black);
+        this.white = white;
+        this.black = black;
         this.chessGameInfo = chessGameInfo;
         this.tournamentInfo = tournamentInfo;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public PlayerInfo getWhite() {
@@ -34,7 +40,6 @@ public class ChessGameDb {
 
     public void setWhite(PlayerInfo white) {
         this.white = white;
-        this.white.setPieces(Pieces.WHITE);
     }
 
     public PlayerInfo getBlack() {
@@ -43,7 +48,6 @@ public class ChessGameDb {
 
     public void setBlack(PlayerInfo black) {
         this.black = black;
-        this.black.setPieces(Pieces.BLACK);
     }
 
     public ChessGameInfo getChessGameInfo() {

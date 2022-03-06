@@ -1,7 +1,5 @@
 package cz.uhk.nekvimi.chessdatabase.entity;
 
-import cz.uhk.nekvimi.chessdatabase.Pieces;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -13,14 +11,12 @@ public class PlayerInfo {
     long id;
     String name;
     String elo;
-    Pieces pieces;
 
     public PlayerInfo() {
     }
     public PlayerInfo(String name, String elo) {
         this.name = name;
         this.elo = elo;
-        this.pieces = Pieces.UNKNOWN;
     }
 
     public String getName() {
@@ -37,13 +33,5 @@ public class PlayerInfo {
 
     public void setElo(String elo) {
         this.elo = elo;
-    }
-
-    public Pieces getPieces() {
-        return pieces;
-    }
-
-    public void setPieces(Pieces pieces) {
-        this.pieces = pieces;
     }
 }

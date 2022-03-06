@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,21 +22,42 @@ public class ChessGameController {
     }
 
     @GetMapping("/api/chessGames")
-    public List<ChessGameDb> findAll() {
-        return repository.findAll();
+    public List<ChessGamePreviewDto> findAll() {
+        var gamesDb = repository.findAll();
+        var gamesDto = new ArrayList<ChessGamePreviewDto>();
+        for (var game : gamesDb) {
+            gamesDto.add(new ChessGamePreviewDto(game));
+        }
+        return gamesDto;
+    }
+
+    @GetMapping("/api/getChessGame")
+    public String getChessGame(@RequestParam("ID") Long id) {
+        var game = repository.findById(id).get();
+        return game.getChessGameInfo().getRawGameData();
+    }
+
+    @GetMapping("/api/deleteGames")
+    public void deleteGames() {
+        repository.deleteAll();
+    }
+
+    @PostMapping("/api/save")
+    public long saveGame(ChessGameDb game) {
+        return repository.save(game).getId();
     }
 
     @PostMapping("/api/database")
     public List<ChessGamePreviewDto> saveGames(@RequestParam("file") MultipartFile pgnFile) {
 
-        databaseParser = new PgnDatabaseParser(Charset.forName("Cp1252"));
+        databaseParser = new PgnDatabaseParser();
         converter = new PgnGameConverter();
         List<ChessGamePreviewDto> gameDtos = new ArrayList<>();
         try {
             for (String game : databaseParser.splitDbToIndividualGames(pgnFile.getInputStream())) {
                 var chessGame = databaseParser.parseToChessGame(game);
-                repository.save(converter.convertToChessGameDb(chessGame));
-                gameDtos.add(converter.convertToChessGameDto(chessGame));
+                var chessGameSaved = repository.save(converter.convertToChessGameDb(chessGame));
+                gameDtos.add(new ChessGamePreviewDto(chessGameSaved));
             }
         } catch (IOException e) {
             e.printStackTrace();

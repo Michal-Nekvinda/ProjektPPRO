@@ -6,24 +6,23 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import java.util.Date;
 
 @Entity
 public class ChessGameInfo {
     long id;
     String eco;
     Result result;
-    @Column(length = 5_000)
-    String game_record;
+    @Column(length = 5000)
+    String rawGameData;
     String date;
 
     public ChessGameInfo() {
     }
 
-    public ChessGameInfo(String eco, Result result, String game_record, String date) {
+    public ChessGameInfo(String eco, Result result, String rawGameData, String date) {
         this.eco = eco;
         this.result = result;
-        this.game_record = game_record;
+        this.rawGameData = rawGameData;
         this.date = date;
     }
 
@@ -53,12 +52,12 @@ public class ChessGameInfo {
         this.result = result;
     }
 
-    public String getGame_record() {
-        return game_record;
+    public String getRawGameData() {
+        return rawGameData;
     }
 
-    public void setGame_record(String game_record) {
-        this.game_record = game_record;
+    public void setRawGameData(String rawGameData) {
+        this.rawGameData = rawGameData;
     }
 
     public String getDate() {

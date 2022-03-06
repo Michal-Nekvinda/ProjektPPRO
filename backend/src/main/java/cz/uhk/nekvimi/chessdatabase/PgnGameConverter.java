@@ -1,6 +1,5 @@
 package cz.uhk.nekvimi.chessdatabase;
 
-import cz.uhk.nekvimi.chessdatabase.dto.ChessGamePreviewDto;
 import cz.uhk.nekvimi.chessdatabase.entity.ChessGameDb;
 import cz.uhk.nekvimi.chessdatabase.entity.ChessGameInfo;
 import cz.uhk.nekvimi.chessdatabase.entity.PlayerInfo;
@@ -18,18 +17,6 @@ public class PgnGameConverter implements ChessGameConverter<PgnTag, String> {
         return x;
     }
 
-    @Override
-    public ChessGamePreviewDto convertToChessGameDto(ChessGame<PgnTag, String> chessGame) {
-        return new ChessGamePreviewDto(
-                chessGame.getGamePart(PgnTag.WHITE_NAME),
-                chessGame.getGamePart(PgnTag.WHITE_ELO),
-                chessGame.getGamePart(PgnTag.BLACK_NAME),
-                chessGame.getGamePart(PgnTag.BLACK_ELO),
-                chessGame.getGamePart(PgnTag.RESULT),
-                chessGame.getGamePart(PgnTag.ECO),
-                chessGame.getGamePart(PgnTag.TOURNAMENT));
-    }
-
     private PlayerInfo getPlayerInfo(ChessGame<PgnTag, String> chessGame, boolean white) {
         if (white) {
             return new PlayerInfo(chessGame.getGamePart(PgnTag.WHITE_NAME), chessGame.getGamePart(PgnTag.WHITE_ELO));
@@ -43,7 +30,7 @@ public class PgnGameConverter implements ChessGameConverter<PgnTag, String> {
         return new ChessGameInfo(
                 chessGame.getGamePart(PgnTag.ECO),
                 Result.getResult(chessGame.getGamePart(PgnTag.RESULT)),
-                chessGame.getGamePart(PgnTag.GAME_RECORD),
+                chessGame.getGamePart(PgnTag.GAME_DATA),
                 chessGame.getGamePart(PgnTag.DATE));
     }
 

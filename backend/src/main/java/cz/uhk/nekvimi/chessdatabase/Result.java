@@ -11,6 +11,10 @@ public enum Result {
     }
     private String result;
 
+    public String getValue(){
+        return result;
+    }
+
     public static Result getResult(String result) {
         var parsed = result.trim().split("-");
         if (parsed.length != 2) {
@@ -27,10 +31,6 @@ public enum Result {
         }
 
         return Result.UNKNOWN;
-    }
-
-    public String getResult() {
-        return this.result;
     }
 }
 

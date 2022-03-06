@@ -59,7 +59,8 @@ public class PgnDatabaseParser implements ChessDatabaseParser<PgnTag,String> {
         if (headerAndBody.length != 2) {
             return null;
         }
-        pgnGame.setGamePart(PgnTag.GAME_RECORD, headerAndBody[1]);
+
+        pgnGame.setGamePart(PgnTag.GAME_DATA, formatGameString(headerAndBody[1]));
         var headerLines = headerAndBody[0].split(System.getProperty("line.separator"));
         for (String line : headerLines) {
             line = line.trim();
@@ -83,6 +84,10 @@ public class PgnDatabaseParser implements ChessDatabaseParser<PgnTag,String> {
         }
 
         return pgnGame;
+    }
+
+    private String formatGameString(String game){
+        return game.replace("\n", " ").replace("\r", "");
     }
 
     private PgnTag tryGetTagFromString(String key) {

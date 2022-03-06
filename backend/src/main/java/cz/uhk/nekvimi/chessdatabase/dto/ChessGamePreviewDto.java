@@ -1,36 +1,60 @@
 package cz.uhk.nekvimi.chessdatabase.dto;
 
 import cz.uhk.nekvimi.chessdatabase.DtoWithError;
+import cz.uhk.nekvimi.chessdatabase.entity.ChessGameDb;
 
 public class ChessGamePreviewDto extends DtoWithError {
-
+    long id;
     String whiteName;
     String whiteElo;
     String blackName;
     String blackElo;
     String result;
     String eco;
-    String tournamentName;
+    String tournament;
+    String date;
 
     public ChessGamePreviewDto() {
     }
 
-    public ChessGamePreviewDto(String whiteName, String whiteElo, String blackName, String blackElo, String result, String eco, String tournamentName) {
+    public ChessGamePreviewDto(ChessGameDb gameDb) {
+        this.id = gameDb.getId();
+        this.whiteName = gameDb.getWhite().getName();
+        this.whiteElo = gameDb.getWhite().getElo();
+        this.blackName = gameDb.getBlack().getName();
+        this.blackElo = gameDb.getBlack().getElo();
+        this.result = gameDb.getChessGameInfo().getResult().getValue();
+        this.eco = gameDb.getChessGameInfo().getEco();
+        this.tournament = gameDb.getTournamentInfo().getName();
+        this.date = gameDb.getChessGameInfo().getDate();
+    }
+
+    public ChessGamePreviewDto(long id, String whiteName, String whiteElo, String blackName, String blackElo, String result, String eco, String tournament, String date) {
+        this.id = id;
         this.whiteName = whiteName;
         this.whiteElo = whiteElo;
         this.blackName = blackName;
         this.blackElo = blackElo;
         this.result = result;
         this.eco = eco;
-        this.tournamentName = tournamentName;
+        this.tournament = tournament;
+        this.date = date;
     }
 
-    public String getTournamentName() {
-        return tournamentName;
+    public long getId() {
+        return id;
     }
 
-    public void setTournamentName(String tournamentName) {
-        this.tournamentName = tournamentName;
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getTournament() {
+        return tournament;
+    }
+
+    public void setTournament(String tournament) {
+        this.tournament = tournament;
     }
 
     public String getWhiteName() {
@@ -79,5 +103,13 @@ public class ChessGamePreviewDto extends DtoWithError {
 
     public void setEco(String eco) {
         this.eco = eco;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

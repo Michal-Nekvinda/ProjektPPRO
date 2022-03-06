@@ -11,7 +11,7 @@ public enum PgnTag {
     ROUND("Round"),
     ECO("ECO"),
     DATE("Date"),
-    GAME_RECORD("Game");
+    GAME_DATA("Game");
 
     private String key;
     PgnTag(String key) {
