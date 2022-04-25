@@ -1,16 +1,13 @@
 <template>
   <div class="fileLoader">
     <input
-      class="hide"
+      class="buttonStyle"
       type="file"
       accept=".pgn"
       @change="onFileSelected"
       ref="fileInput"
     />
     <div>
-      <button class="buttonStyle" @click="$refs.fileInput.click()">
-        Vybrat soubor
-      </button>
       <button class="buttonStyle" @click="onUpload" v-if="selectedFile != null">
         Nahrát
       </button>
@@ -46,6 +43,7 @@ export default {
       }).then((response) => {
         this.$parent.addGames(response.data);
       });
+      this.selectedFile = null;
     },
   },
 };
@@ -54,15 +52,11 @@ export default {
 <style>
 .fileLoader {
   text-align: left;
-  padding-left: 10px;
+  margin: 2px, 5px;
 }
 .buttonStyle {
   display: inline-block;
-  text-align: center;
+  text-align: left;
   cursor: pointer;
-  margin: 10px 10px;
-}
-.hide {
-  display: none;
 }
 </style>

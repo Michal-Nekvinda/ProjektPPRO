@@ -1,31 +1,38 @@
 <template>
   <div>
     <database-loader />
-    Najít
-    <input
-      type="text"
-      placeholder="Jméno..."
-      class="table-search-filters"
-      v-model="nameSearch"
-      v-on:keyup="filterGames"
-    />
-    <input type="checkbox" v-model="ignoreColours" v-on:change="filterGames" />
-    Ignorovat barvu figur <br />
+    <div class="filterPanel">
+      <span class="tableSearchFilters"> Najít </span>
+      <input
+        type="text"
+        placeholder="Jméno..."
+        class="tableSearchFilters"
+        v-model="nameSearch"
+        v-on:keyup="filterGames"
+      />
+      <input
+        type="checkbox"
+        v-model="ignoreColours"
+        v-on:change="filterGames"
+      />
+      Ignorovat barvu figur
 
-    <input
-      type="text"
-      placeholder="Turnaj..."
-      class="table-search-filters"
-      v-model="tournamentSearch"
-      v-on:keyup="filterGames"
-    />
-    <input
-      type="text"
-      placeholder="Zahájení..."
-      class="table-search-filters"
-      v-model="openingSearch"
-      v-on:keyup="filterGames"
-    />
+      <input
+        type="text"
+        placeholder="Turnaj..."
+        class="tableSearchFilters"
+        v-model="tournamentSearch"
+        v-on:keyup="filterGames"
+      />
+      <input
+        type="text"
+        placeholder="Zahájení..."
+        class="tableSearchFilters"
+        v-model="openingSearch"
+        v-on:keyup="filterGames"
+      />
+    </div>
+
     <table>
       <tr id="row-1">
         <th>Bílý</th>
@@ -151,7 +158,13 @@ th {
   font-size: 12px;
   margin: 5px;
 }
-
+.tableSearchFilters {
+  margin: 10px 10px;
+}
+.filterPanel {
+  margin: 10px, 10px;
+  text-align: left;
+}
 table {
   border-collapse: collapse;
   width: 70%;

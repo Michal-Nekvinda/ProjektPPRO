@@ -21,7 +21,6 @@
     <div class="formPopup" id="popupForm">
       <textarea name="comment" rows="10" cols="20" v-model="moveComment">
       </textarea>
-
       <button class="btn">Vložit</button>
       <button type="button" class="btn" onclick="closeForm()">Zavřít</button>
     </div>
@@ -40,13 +39,12 @@ export default {
 
   methods: {
     moveForward() {
-      console.log();
       if (this.currentMoveIndex >= this.movesReader.history().length) {
         return;
       }
       const move = this.movesReader.history()[this.currentMoveIndex].san;
       this.stateInBoard.move(move);
-      this.board.position(this.stateInBoard.fen());
+      this.stateInBoard.this.board.position(this.stateInBoard.fen());
       this.currentMoveIndex++;
     },
     moveBackward() {
