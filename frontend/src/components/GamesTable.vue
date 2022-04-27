@@ -2,7 +2,7 @@
   <div>
     <database-loader />
     <div class="filterPanel">
-      <span class="tableSearchFilters"> Najít </span>
+      <span class="tableSearchFilters"> Najít: </span>
       <input
         type="text"
         placeholder="Jméno..."
@@ -10,12 +10,6 @@
         v-model="nameSearch"
         v-on:keyup="filterGames"
       />
-      <input
-        type="checkbox"
-        v-model="ignoreColours"
-        v-on:change="filterGames"
-      />
-      Ignorovat barvu figur
 
       <input
         type="text"
@@ -162,10 +156,11 @@ th {
   margin: 10px 10px;
 }
 .filterPanel {
-  margin: 10px, 10px;
+  margin: 5px, 5px;
   text-align: left;
 }
 table {
+  margin: 0px 0px 20px 10px;
   border-collapse: collapse;
   width: 70%;
 }
