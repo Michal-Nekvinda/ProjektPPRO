@@ -53,6 +53,11 @@
         <td>{{ game.tournament }}</td>
       </tr>
     </table>
+    <div>
+      <button class="buttonStyle" @click="onDelete">
+        Smazat vybrané partie
+      </button>
+    </div>
     <chessboard-wrapper ref="chessboardWrapper" />
     <games-statistics v-bind:games="this.displayedGames" />
   </div>
@@ -92,6 +97,30 @@ export default {
       });
     },
 
+    onDelete() {
+      var ids = [];
+      for (let i = 0; i < this.displayedGames.length; i++) {
+        ids.push(this.displayedGames[i].id);
+      }
+      axios({
+        url: "http://localhost:8080/api/deleteGames",
+        method: "POST",
+        data: ids,
+      }).then(() => {
+        this.reloadGames();
+      });
+    },
+
+    reloadGames() {
+      axios({
+        url: "http://localhost:8080/api/getChessGames",
+        method: "GET",
+      }).then((response) => {
+        this.games = [];
+        this.addGames(response.data);
+      });
+    },
+
     filterGames() {
       var newDisplayedGames = [];
       for (let i = 0; i < this.games.length; i++) {
@@ -104,6 +133,7 @@ export default {
 
       this.displayedGames = newDisplayedGames;
     },
+
     shouldDisplayGame(game) {
       if (
         game.tournament == null ||
@@ -128,6 +158,10 @@ export default {
       return true;
     },
   },
+  mounted() {
+    this.reloadGames();
+  },
+
   data() {
     return {
       nameSearch: "",
@@ -169,5 +203,10 @@ table {
 }
 .dataRow:hover {
   background-color: lightgray;
+}
+.buttonStyle {
+  display: inline-block;
+  cursor: pointer;
+  margin: 10px;
 }
 </style>

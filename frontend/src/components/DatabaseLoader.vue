@@ -1,12 +1,14 @@
 <template>
   <div class="fileLoader">
-    <input
-      class="buttonStyle"
-      type="file"
-      accept=".pgn"
-      @change="onFileSelected"
-      ref="fileInput"
-    />
+    <form>
+      <input
+        id="fileChooser"
+        class="buttonStyle"
+        type="file"
+        accept=".pgn"
+        @change="onFileSelected"
+      />
+    </form>
     <div>
       <button class="buttonStyle" @click="onUpload" v-if="selectedFile != null">
         Nahrát
@@ -31,6 +33,7 @@ export default {
       this.formData = new FormData();
       this.formData.append("file", this.selectedFile);
     },
+
     onUpload() {
       axios({
         url: "http://localhost:8080/api/database",
@@ -42,8 +45,9 @@ export default {
         },
       }).then((response) => {
         this.$parent.addGames(response.data);
+        this.selectedFile = null;
+        document.getElementById("fileChooser").value = null;
       });
-      this.selectedFile = null;
     },
   },
 };
