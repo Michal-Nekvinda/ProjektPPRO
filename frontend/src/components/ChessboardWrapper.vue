@@ -86,6 +86,7 @@ export default {
       this.movesReader = new Chess();
       this.currentMoveIndex = 0;
       this.loadedGame = "";
+      this.stateInBoard = new Chess();
     },
     addComment() {},
 
@@ -97,15 +98,8 @@ export default {
       this.stateInBoard = new Chess();
     },
 
-    onDragStart(piece) {
+    onDragStart() {
       if (this.movesReader.game_over()) return false;
-
-      if (
-        (this.movesReader.turn() === "w" && piece.search(/^b/) !== -1) ||
-        (this.movesReader.turn() === "b" && piece.search(/^w/) !== -1)
-      ) {
-        return false;
-      }
     },
 
     onDrop(source, target) {
@@ -116,7 +110,11 @@ export default {
       });
 
       // illegal move
-      if (move === null) return "snapback";
+      if (move === null) {
+        return "snapback";
+      }
+      this.stateInBoard.move(move);
+      this.movesReader = this.stateInBoard;
     },
 
     // update the board position after the piece snap
