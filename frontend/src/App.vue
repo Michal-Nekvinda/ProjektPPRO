@@ -7,17 +7,18 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Component, Vue } from "vue-property-decorator";
 import TheHeader from "./components/TheHeader.vue";
 import GamesTable from "./components/GamesTable.vue";
 
-export default {
-  name: "App",
+@Component({
   components: {
     TheHeader,
     GamesTable,
   },
-};
+})
+export default class App extends Vue {}
 </script>
 
 <style>

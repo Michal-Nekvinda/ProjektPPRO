@@ -64,11 +64,12 @@
 </template>
 
 
-<script>
+<script lang="ts">
 import ChessboardWrapper from "./ChessboardWrapper.vue";
 import GamesStatistics from "./GamesStatistics.vue";
 import DatabaseLoader from "./DatabaseLoader.vue";
 import axios from "axios";
+import { ChessGame } from "../api/backendApi";
 
 export default {
   name: "GamesTable",
@@ -78,14 +79,14 @@ export default {
     DatabaseLoader,
   },
   methods: {
-    addGames(gamesFromDb) {
+    addGames(gamesFromDb: ChessGame[]) {
       for (let i = 0; i < gamesFromDb.length; i++) {
         this.games.push(gamesFromDb[i]);
       }
       this.filterGames();
     },
 
-    onGameClick(id) {
+    onGameClick(id: number) {
       axios({
         url: "http://localhost:8080/api/getChessGame",
         method: "GET",
@@ -93,7 +94,7 @@ export default {
           ID: id,
         },
       }).then((response) => {
-        this.$refs.chessboardWrapper.setupBoard(response.data);
+        this.$refs.chessboardWrapper.loadGame(response.data);
       });
     },
 
@@ -134,7 +135,7 @@ export default {
       this.displayedGames = newDisplayedGames;
     },
 
-    shouldDisplayGame(game) {
+    shouldDisplayGame(game: ChessGame) {
       if (
         game.tournament == null ||
         !game.tournament

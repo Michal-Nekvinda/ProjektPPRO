@@ -1,88 +1,138 @@
 <template>
   <div>
     <label>Výběr statistiky pro partie:</label>
-    <select v-model="selected" @change="showTable">
-      <option v-for="stat in stats" v-bind:value="stat.id" :key="stat.id">
+    <select v-model="selected">
+      <option
+        v-for="stat in statisticsNames"
+        v-bind:value="stat.id"
+        :key="stat.id"
+      >
         {{ stat.name }}
       </option>
     </select>
-    <div>
-      <label for="dd">{{ selected }}</label>
-    </div>
+    <button @click="onStatChange" v-if="this.selected != 0">Obnovit</button>
+    <label
+      >Počet záznamů<input
+        type="number"
+        min="1"
+        step="1"
+        v-model="numberOfRecords"
+    /></label>
     <table>
-      <tr id="row-1">
-        <th>Bílý</th>
-        <th>Elo</th>
-        <th>Černý</th>
-        <th>Elo</th>
-        <th>Výsledek</th>
-        <th>Tahy</th>
-        <th>Zahájení</th>
-        <th>Turnaj</th>
-        <th>Datum</th>
+      <tr>
+        <th
+          v-for="(columnName, index) in displayedStatistics.header"
+          :key="index"
+        >
+          {{ columnName }}
+        </th>
       </tr>
-
-      <tr class="dataRow" v-for="game in games" :key="game.id">
-        <td>{{ game.white }}</td>
-        <td>{{ game.whiteElo }}</td>
-        <td>{{ game.black }}</td>
-        <td>{{ game.blackElo }}</td>
-        <td>{{ game.result }}</td>
-        <td>{{ game.moves }}</td>
-        <td>{{ game.opening }}</td>
-        <td>{{ game.tournament }}</td>
-        <td>{{ game.date }}</td>
+      <tr v-for="(rowData, index) in displayedStatistics.data" :key="index">
+        <td v-for="(columnData, index) in rowData" :key="index">
+          {{ columnData }}
+        </td>
       </tr>
     </table>
   </div>
 </template>
 
-<script>
-class Game {
-  constructor(
-    id,
-    white,
-    whiteElo,
-    black,
-    blackElo,
-    result,
-    moves,
-    opening,
-    tournament,
-    date
-  ) {
-    this.id = id;
-    this.white = white;
-    this.whiteElo = whiteElo;
-    this.black = black;
-    this.blackElo = blackElo;
-    this.result = result;
-    this.moves = moves;
-    this.opening = opening;
-    this.tournament = tournament;
-    this.date = date;
-  }
-}
-
+<script lang="ts">
+import { ChessGame } from "./../api/backendApi";
 export default {
   name: "GamesStatistics",
   props: {
-    games: Array[Game],
+    games: Array,
   },
   methods: {
-    showTable() {
-      console.log(this.selected);
+    onStatChange() {
+      const tableHeader: string[] = this.createHeader();
+      this.displayedStatistics = new Statistics();
+      this.displayedStatistics.addHeader(tableHeader);
+      const tableData: ChessGame[] = this.createData();
+      tableData.forEach((row) => {
+        this.displayedStatistics.addDataRow(row);
+      });
     },
+    createHeader() {
+      switch (this.selected) {
+        case StatisticsType.Openings:
+          return ["Zahájení", "Počet", "Podíl"];
+        case StatisticsType.Piece:
+          return ["Výhra bílý", "Výhra černý", "Remíza"];
+        case StatisticsType.Players:
+          return ["Hráč", "Body", "Úspěšnost"];
+      }
+    },
+    createData(): Array<Array<string>> {
+      switch (this.selected) {
+        case StatisticsType.Openings:
+          return this.getMostPlayedOpenings();
+        /*
+        case StatisticsType.Piece:
+          return this.getSuccessRateByPieceColor();
+        case StatisticsType.Players:
+          return this.getBestPlayers();
+          */
+      }
+    },
+    getMostPlayedOpenings() {
+      let dict: any = {};
+      let gamesCount = 0;
+      this.games.forEach((game: ChessGame) => {
+        if (game.eco) {
+          dict[game.eco] = dict[game.eco] ? dict[game.eco] + 1 : 1;
+          gamesCount++;
+        }
+      });
+      // Create items array
+      var items = Object.keys(dict).map(function (key) {
+        return [key, dict[key], dict[key] / gamesCount];
+      });
+
+      // Sort the array based on the second element
+      items.sort(function (first, second) {
+        return second[1] - first[1];
+      });
+
+      // Create a new array with only the first 5 items
+      return items.slice(0, this.numberOfRecords);
+    },
+    getSuccessRateByPieceColor() {},
+    getBestPlayers() {},
   },
   data() {
     return {
-      selected: "",
-      stats: [
-        { id: 1, name: "volba 1" },
-        { id: 2, name: "volba 2" },
+      selected: StatisticsType.None,
+      statisticsNames: [
+        { id: StatisticsType.Openings, name: "Nejčastěji hraná zahájení" },
+        { id: StatisticsType.Piece, name: "Úspěšnost dle barvy figur" },
+        { id: StatisticsType.Players, name: "Úspěšnost hráčů" },
       ],
+      displayedStatistics: new Statistics(),
+      numberOfRecords: 10,
     };
   },
 };
+const StatisticsType = {
+  None: 0,
+  Openings: 1,
+  Piece: 2,
+  Players: 3,
+};
+
+class Statistics {
+  header: string[];
+  data: ChessGame[];
+  constructor() {
+    this.header = [];
+    this.data = [];
+  }
+  addHeader(header: string[]) {
+    this.header = header;
+  }
+  addDataRow(rowData: ChessGame) {
+    this.data.push(rowData);
+  }
+}
 </script>
 

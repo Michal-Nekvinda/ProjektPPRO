@@ -2,7 +2,6 @@ package cz.uhk.nekvimi.chessdatabase.rest;
 
 import cz.uhk.nekvimi.chessdatabase.*;
 import cz.uhk.nekvimi.chessdatabase.dto.ChessGamePreviewDto;
-import cz.uhk.nekvimi.chessdatabase.entity.ChessGameDb;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,7 +20,7 @@ public class ChessGameController {
         this.repository = repository;
     }
 
-    @GetMapping("/api/chessGames")
+    @GetMapping("/api/getChessGames")
     public List<ChessGamePreviewDto> findAll() {
         var gamesDb = repository.findAll();
         var gamesDto = new ArrayList<ChessGamePreviewDto>();
@@ -37,31 +36,40 @@ public class ChessGameController {
         return game.getChessGameInfo().getRawGameData();
     }
 
-    @GetMapping("/api/deleteGames")
-    public void deleteGames() {
-        repository.deleteAll();
+    @PostMapping("/api/deleteGames")
+    public void deleteGames(@RequestBody List<Long> ids) {
+        for (long id : ids) {
+            repository.deleteById(id);
+        }
     }
 
     @PostMapping("/api/save")
-    public long saveGame(ChessGameDb game) {
-        return repository.save(game).getId();
+    public ChessGamePreviewDto saveGame(String game) {
+        var chessGame = databaseParser.parseToChessGame(game);
+        var chessGameSaved = repository.save(converter.convertToChessGameDb(chessGame));
+        return new ChessGamePreviewDto(chessGameSaved);
     }
 
     @PostMapping("/api/database")
     public List<ChessGamePreviewDto> saveGames(@RequestParam("file") MultipartFile pgnFile) {
-
         databaseParser = new PgnDatabaseParser();
         converter = new PgnGameConverter();
         List<ChessGamePreviewDto> gameDtos = new ArrayList<>();
         try {
             for (String game : databaseParser.splitDbToIndividualGames(pgnFile.getInputStream())) {
-                var chessGame = databaseParser.parseToChessGame(game);
-                var chessGameSaved = repository.save(converter.convertToChessGameDb(chessGame));
-                gameDtos.add(new ChessGamePreviewDto(chessGameSaved));
+                gameDtos.add(saveGame(game));
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return gameDtos;
     }
+
+
+    @GetMapping("/api/deleteAll")
+    public boolean deleteAll(){
+        repository.deleteAll();
+        return true;
+    }
+
 }
