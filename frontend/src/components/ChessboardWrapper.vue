@@ -35,11 +35,26 @@
         Přidat komentář k tahu
       </button>
     </div>
-    <div class="formPopup" id="popupForm">
-      <textarea name="comment" rows="10" cols="20" v-model="moveComment">
-      </textarea>
-      <button class="btn">Vložit</button>
-      <button type="button" class="btn" onclick="closeForm()">Zavřít</button>
+    <div class="form-popup" id="myForm" v-if="showNewGameForm">
+      <form class="form-container">
+        <h1>Login</h1>
+
+        <label for="email"><b>Email</b></label>
+        <input type="text" placeholder="Enter Email" name="email" required />
+
+        <label for="psw"><b>Password</b></label>
+        <input
+          type="password"
+          placeholder="Enter Password"
+          name="psw"
+          required
+        />
+
+        <button type="submit" class="btn">Login</button>
+        <button type="button" class="btn cancel" @click="onCloseForm()">
+          Close
+        </button>
+      </form>
     </div>
   </div>
 </template>
@@ -81,23 +96,31 @@ export default {
         onDrop: this.onDrop,
         onSnapEnd: this.onSnapEnd,
       };
-      this.board = ChessBoard("chessboard", config);
-      this.currentMoveIndex = 0;
-      this.movesReader = new Chess();
-      this.currentMoveIndex = 0;
-      this.loadedGame = "";
-      this.stateInBoard = new Chess();
+      this.setupBoard(config, "");
+      this.showNewGameForm = true;
     },
     addComment() {},
 
-    setupBoard(chosenGame) {
-      this.loadedGame = chosenGame;
-      this.board = ChessBoard("chessboard", "start");
-      this.movesReader = new Chess();
+    loadGame(chosenGame) {
+      var config = {
+        position: "start",
+      };
+      this.setupBoard(config, chosenGame);
       this.movesReader.load_pgn(this.loadedGame);
-      this.stateInBoard = new Chess();
     },
 
+    setupBoard(boardConfig, chosenGame) {
+      this.movesReader = new Chess();
+      this.board = ChessBoard("chessboard", boardConfig);
+      this.stateInBoard = new Chess();
+      this.currentMoveIndex = 0;
+      this.loadedGame = chosenGame;
+    },
+    onCloseForm() {
+      this.showNewGameForm = false;
+    },
+
+    //metody pro ovladani sachovnice
     onDragStart() {
       if (this.movesReader.game_over()) return false;
     },
@@ -117,14 +140,14 @@ export default {
       this.movesReader = this.stateInBoard;
     },
 
-    // update the board position after the piece snap
-    // for castling, en passant, pawn promotion
+    // update the board position after the piece snap for castling, en passant, pawn promotion
     onSnapEnd() {
       this.board.position(this.movesReader.fen());
       this.loadedGame = this.movesReader.pgn();
       this.currentMoveIndex++;
     },
   },
+
   data() {
     return {
       board: null,
@@ -133,6 +156,7 @@ export default {
       moveComment: "",
       loadedGame: "",
       stateInBoard: null,
+      showNewGameForm: false,
     };
   },
 };
