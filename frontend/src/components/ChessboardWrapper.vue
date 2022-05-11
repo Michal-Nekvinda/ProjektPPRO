@@ -1,6 +1,10 @@
 <template>
   <div>
+    <div v-if="this.chosenGameHeader.whiteName">
+      <h3>{{ this.createHeader() }}</h3>
+    </div>
     <div class="chessBoardStyle" id="chessboard" style="width: 400px"></div>
+    <h3 class="textAreaStyle">{{ this.showLastMove() }}</h3>
     <textarea
       class="textAreaStyle"
       name="chessGameView"
@@ -35,33 +39,20 @@
         Přidat komentář k tahu
       </button>
     </div>
-    <div class="form-popup" id="myForm" v-if="showNewGameForm">
-      <form class="form-container">
-        <h1>Login</h1>
-
-        <label for="email"><b>Email</b></label>
-        <input type="text" placeholder="Enter Email" name="email" required />
-
-        <label for="psw"><b>Password</b></label>
-        <input
-          type="password"
-          placeholder="Enter Password"
-          name="psw"
-          required
-        />
-
-        <button type="submit" class="btn">Login</button>
-        <button type="button" class="btn cancel" @click="onCloseForm()">
-          Close
-        </button>
-      </form>
+    <div class="modal-overlay" v-show="showModalNewGame">
+      <div class="modal">
+        <h6>Saved!</h6>
+        <p>Your Details have been saved Successfully</p>
+        <button @click="onCloseModalNewGame">Go Home</button>
+      </div>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 import ChessBoard from "chessboardjs-vue";
 import { Chess } from "chess.js";
+import { ChessGame } from "@/api/backendApi";
 
 export default {
   name: "ChessboardWrapper",
@@ -69,6 +60,22 @@ export default {
     this.board = ChessBoard("chessboard", "start");
   },
   methods: {
+    createHeader(): string {
+      const g: ChessGame = this.chosenGameHeader;
+      const whiteElo = g.whiteElo ? "(" + g.whiteElo + ")" : "";
+      const blackElo = g.blackElo ? "(" + g.blackElo + ")" : "";
+      return (
+        g.whiteName +
+        " " +
+        whiteElo +
+        " - " +
+        g.blackName +
+        " " +
+        blackElo +
+        " " +
+        g.result
+      );
+    },
     moveForward() {
       if (this.currentMoveIndex >= this.movesReader.history().length) {
         return;
@@ -97,27 +104,35 @@ export default {
         onSnapEnd: this.onSnapEnd,
       };
       this.setupBoard(config, "");
-      this.showNewGameForm = true;
+      this.showModalNewGame = true;
     },
     addComment() {},
-
-    loadGame(chosenGame) {
-      var config = {
+    showLastMove(): string {
+      if (this.stateInBoard && this.stateInBoard.history()) {
+        return this.stateInBoard.history()[
+          this.stateInBoard.history().length - 1
+        ];
+      }
+      return "";
+    },
+    loadGame(chosenGamePgn: string, chosenGameHeader: ChessGame) {
+      const config = {
         position: "start",
       };
-      this.setupBoard(config, chosenGame);
+      this.setupBoard(config, chosenGamePgn);
       this.movesReader.load_pgn(this.loadedGame);
+      this.chosenGameHeader = chosenGameHeader;
     },
 
-    setupBoard(boardConfig, chosenGame) {
+    setupBoard(boardConfig: any, chosenGamePgn: string) {
       this.movesReader = new Chess();
       this.board = ChessBoard("chessboard", boardConfig);
       this.stateInBoard = new Chess();
       this.currentMoveIndex = 0;
-      this.loadedGame = chosenGame;
+      this.loadedGame = chosenGamePgn;
     },
-    onCloseForm() {
-      this.showNewGameForm = false;
+    onCloseModalNewGame() {
+      this.showModalNewGame = false;
     },
 
     //metody pro ovladani sachovnice
@@ -125,7 +140,7 @@ export default {
       if (this.movesReader.game_over()) return false;
     },
 
-    onDrop(source, target) {
+    onDrop(source: any, target: any) {
       var move = this.movesReader.move({
         from: source,
         to: target,
@@ -156,7 +171,8 @@ export default {
       moveComment: "",
       loadedGame: "",
       stateInBoard: null,
-      showNewGameForm: false,
+      showModalNewGame: false,
+      chosenGameHeader: new ChessGame(),
     };
   },
 };
@@ -179,5 +195,29 @@ export default {
   display: inline-block;
   margin: 30px;
   resize: none;
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  background-color: #000000da;
+}
+
+.modal {
+  text-align: center;
+  background-color: white;
+  height: 500px;
+  width: 500px;
+  margin-top: 10%;
+  padding: 60px 0;
+  border-radius: 20px;
+}
+.close {
+  margin: 10% 0 0 16px;
+  cursor: pointer;
 }
 </style>

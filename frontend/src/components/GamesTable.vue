@@ -40,7 +40,7 @@
 
       <tr
         class="dataRow"
-        @click="onGameClick(game.id)"
+        @click="onGameClick(game)"
         v-for="game in displayedGames"
         :key="game.id"
       >
@@ -86,15 +86,15 @@ export default {
       this.filterGames();
     },
 
-    onGameClick(id: number) {
+    onGameClick(game: ChessGame) {
       axios({
         url: "http://localhost:8080/api/getChessGame",
         method: "GET",
         params: {
-          ID: id,
+          ID: game.id,
         },
       }).then((response) => {
-        this.$refs.chessboardWrapper.loadGame(response.data);
+        this.$refs.chessboardWrapper.loadGame(response.data, game);
       });
     },
 
