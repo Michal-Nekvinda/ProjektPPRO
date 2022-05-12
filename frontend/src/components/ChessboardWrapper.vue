@@ -3,8 +3,10 @@
     <div v-if="this.chosenGameHeader.whiteName">
       <h3>{{ this.createHeader() }}</h3>
     </div>
+    <div v-if="this.currentMoveIndex > 0">
+      <h4>{{ this.showLastMove() }}</h4>
+    </div>
     <div class="chessBoardStyle" id="chessboard" style="width: 400px"></div>
-    <h3 class="textAreaStyle">{{ this.showLastMove() }}</h3>
     <textarea
       class="textAreaStyle"
       name="chessGameView"
@@ -39,8 +41,21 @@
         Přidat komentář k tahu
       </button>
     </div>
+    <div class="modal-overlay" v-show="showModalComment">
+      <div class="modalComment">
+        <h4>Vložit komentář</h4>
+        <input
+          type="text"
+          placeholder="Vložit komentář k tahu..."
+          class="tableSearchFilters"
+          v-model="comment"
+        />
+        <button @click="onCloseModalComment(true)">Vložit</button>
+        <button @click="onCloseModalComment(false)">Zrušit</button>
+      </div>
+    </div>
     <div class="modal-overlay" v-show="showModalNewGame">
-      <div class="modal">
+      <div class="modalNewGame">
         <h6>Saved!</h6>
         <p>Your Details have been saved Successfully</p>
         <button @click="onCloseModalNewGame">Go Home</button>
@@ -60,6 +75,14 @@ export default {
     this.board = ChessBoard("chessboard", "start");
   },
   methods: {
+    showLastMove(): string {
+      if (this.lastMove) {
+        const moveNumber: number = Math.floor((this.currentMoveIndex + 1) / 2);
+        const modulo = (this.currentMoveIndex + 1) % 2;
+        return moveNumber + "." + (modulo === 1 ? "... " : " ") + this.lastMove;
+      }
+      return "";
+    },
     createHeader(): string {
       const g: ChessGame = this.chosenGameHeader;
       const whiteElo = g.whiteElo ? "(" + g.whiteElo + ")" : "";
@@ -80,8 +103,8 @@ export default {
       if (this.currentMoveIndex >= this.movesReader.history().length) {
         return;
       }
-      const move = this.movesReader.history()[this.currentMoveIndex];
-      this.stateInBoard.move(move);
+      this.lastMove = this.movesReader.history()[this.currentMoveIndex];
+      this.stateInBoard.move(this.lastMove);
       this.board.position(this.stateInBoard.fen());
       this.currentMoveIndex++;
     },
@@ -92,6 +115,7 @@ export default {
       this.currentMoveIndex--;
       this.stateInBoard.undo();
       this.board.position(this.stateInBoard.fen());
+      this.lastMove = this.stateInBoard.history()[this.currentMoveIndex - 1];
     },
 
     newGame() {
@@ -106,14 +130,20 @@ export default {
       this.setupBoard(config, "");
       this.showModalNewGame = true;
     },
-    addComment() {},
-    showLastMove(): string {
-      if (this.stateInBoard && this.stateInBoard.history()) {
-        return this.stateInBoard.history()[
-          this.stateInBoard.history().length - 1
-        ];
+    onCloseModalComment(save: boolean) {
+      if (this.comment && save) {
+        var tempChess = new Chess();
+        tempChess.load_pgn(this.stateInBoard.pgn());
+        tempChess.set_comment(this.comment);
+
+        this.movesReader.set_comment(this.comment);
       }
-      return "";
+      this.comment = "";
+      this.showModalComment = false;
+      this.loadedGame = this.movesReader.pgn();
+    },
+    addComment() {
+      this.showModalComment = true;
     },
     loadGame(chosenGamePgn: string, chosenGameHeader: ChessGame) {
       const config = {
@@ -141,7 +171,7 @@ export default {
     },
 
     onDrop(source: any, target: any) {
-      var move = this.movesReader.move({
+      const move = this.movesReader.move({
         from: source,
         to: target,
         promotion: "q",
@@ -160,6 +190,7 @@ export default {
       this.board.position(this.movesReader.fen());
       this.loadedGame = this.movesReader.pgn();
       this.currentMoveIndex++;
+      this.lastMove = this.stateInBoard.history()[this.currentMoveIndex - 1];
     },
   },
 
@@ -173,6 +204,9 @@ export default {
       stateInBoard: null,
       showModalNewGame: false,
       chosenGameHeader: new ChessGame(),
+      lastMove: "",
+      showModalComment: false,
+      comment: "",
     };
   },
 };
@@ -204,20 +238,23 @@ export default {
   right: 0;
   display: flex;
   justify-content: center;
-  background-color: #000000da;
+  background-color: rgba(211, 211, 211, 0.7);
 }
 
-.modal {
+.modalComment {
   text-align: center;
   background-color: white;
-  height: 500px;
-  width: 500px;
+  height: 200px;
+  width: 400px;
   margin-top: 10%;
-  padding: 60px 0;
-  border-radius: 20px;
+  padding: 10px 0;
 }
-.close {
-  margin: 10% 0 0 16px;
-  cursor: pointer;
+.modalNewGame {
+  text-align: center;
+  background-color: white;
+  height: 200px;
+  width: 400px;
+  margin-top: 10%;
+  padding: 10px 0;
 }
 </style>
