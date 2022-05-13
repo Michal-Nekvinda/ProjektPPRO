@@ -41,26 +41,8 @@
         Přidat komentář k tahu
       </button>
     </div>
-    <div class="modal-overlay" v-show="showModalComment">
-      <div class="modalComment">
-        <h4>Vložit komentář</h4>
-        <input
-          type="text"
-          placeholder="Vložit komentář k tahu..."
-          class="tableSearchFilters"
-          v-model="comment"
-        />
-        <button @click="onCloseModalComment(true)">Vložit</button>
-        <button @click="onCloseModalComment(false)">Zrušit</button>
-      </div>
-    </div>
-    <div class="modal-overlay" v-show="showModalNewGame">
-      <div class="modalNewGame">
-        <h6>Saved!</h6>
-        <p>Your Details have been saved Successfully</p>
-        <button @click="onCloseModalNewGame">Go Home</button>
-      </div>
-    </div>
+    <comment-form v-show="showModalComment" />
+    <save-game-form v-show="showModalNewGame" />
   </div>
 </template>
 
@@ -68,8 +50,11 @@
 import ChessBoard from "chessboardjs-vue";
 import { Chess } from "chess.js";
 import { ChessGame } from "@/api/backendApi";
+import SaveGameForm from "./SaveGameForm.vue";
+import CommentForm from "./CommentForm.vue";
 
 export default {
+  components: { SaveGameForm, CommentForm },
   name: "ChessboardWrapper",
   mounted() {
     this.board = ChessBoard("chessboard", "start");
@@ -84,6 +69,7 @@ export default {
       return "";
     },
     createHeader(): string {
+      //if in state new game, then return header with Nova hra or something
       const g: ChessGame = this.chosenGameHeader;
       const whiteElo = g.whiteElo ? "(" + g.whiteElo + ")" : "";
       const blackElo = g.blackElo ? "(" + g.blackElo + ")" : "";
@@ -128,17 +114,14 @@ export default {
         onSnapEnd: this.onSnapEnd,
       };
       this.setupBoard(config, "");
+      this.chosenGameHeader = "Nová hra";
+      //spis az na save
       this.showModalNewGame = true;
     },
-    onCloseModalComment(save: boolean) {
-      if (this.comment && save) {
-        var tempChess = new Chess();
-        tempChess.load_pgn(this.stateInBoard.pgn());
-        tempChess.set_comment(this.comment);
-
-        this.movesReader.set_comment(this.comment);
+    onCloseModalComment(comment: string, save: boolean) {
+      if (comment && save) {
+        this.movesReader.set_comment(comment);
       }
-      this.comment = "";
       this.showModalComment = false;
       this.loadedGame = this.movesReader.pgn();
     },
@@ -161,8 +144,12 @@ export default {
       this.currentMoveIndex = 0;
       this.loadedGame = chosenGamePgn;
     },
-    onCloseModalNewGame() {
+    onCloseModalNewGame(createdGame: ChessGame | undefined) {
       this.showModalNewGame = false;
+      if (createdGame) {
+        console.log("a");
+      }
+      console.log("b");
     },
 
     //metody pro ovladani sachovnice
@@ -199,14 +186,12 @@ export default {
       board: null,
       movesReader: null,
       currentMoveIndex: 0,
-      moveComment: "",
       loadedGame: "",
       stateInBoard: null,
       showModalNewGame: false,
       chosenGameHeader: new ChessGame(),
       lastMove: "",
       showModalComment: false,
-      comment: "",
     };
   },
 };
@@ -229,32 +214,5 @@ export default {
   display: inline-block;
   margin: 30px;
   resize: none;
-}
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  background-color: rgba(211, 211, 211, 0.7);
-}
-
-.modalComment {
-  text-align: center;
-  background-color: white;
-  height: 200px;
-  width: 400px;
-  margin-top: 10%;
-  padding: 10px 0;
-}
-.modalNewGame {
-  text-align: center;
-  background-color: white;
-  height: 200px;
-  width: 400px;
-  margin-top: 10%;
-  padding: 10px 0;
 }
 </style>
