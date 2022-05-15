@@ -1,12 +1,15 @@
 <template>
   <div>
     <database-loader />
+    <div class="left">
+      <label class="labelBold">Seznam partií:</label>
+    </div>
     <div class="filterPanel">
-      <span class="tableSearchFilters"> Najít: </span>
+      <label>Najít:</label>
       <input
         type="text"
         placeholder="Jméno..."
-        class="tableSearchFilters"
+        class="input"
         v-model="nameSearch"
         v-on:keyup="filterGames"
       />
@@ -14,19 +17,18 @@
       <input
         type="text"
         placeholder="Turnaj..."
-        class="tableSearchFilters"
+        class="input"
         v-model="tournamentSearch"
         v-on:keyup="filterGames"
       />
       <input
         type="text"
         placeholder="Zahájení..."
-        class="tableSearchFilters"
+        class="input"
         v-model="openingSearch"
         v-on:keyup="filterGames"
       />
     </div>
-
     <table>
       <tr id="row-1">
         <th>Bílý</th>
@@ -37,7 +39,6 @@
         <th>Zahájení</th>
         <th>Turnaj</th>
       </tr>
-
       <tr
         class="dataRow"
         @click="onGameClick(game)"
@@ -53,16 +54,13 @@
         <td>{{ game.tournament }}</td>
       </tr>
     </table>
-    <div>
-      <button class="buttonStyle" @click="onDelete">
-        Smazat vybrané partie
-      </button>
+    <div class="buttonLeft">
+      <button @click="onDelete">Smazat vybrané partie</button>
     </div>
     <chessboard-wrapper ref="chessboardWrapper" />
     <games-statistics v-bind:games="this.displayedGames" />
   </div>
 </template>
-
 
 <script lang="ts">
 import ChessboardWrapper from "./ChessboardWrapper.vue";
@@ -70,8 +68,9 @@ import GamesStatistics from "./GamesStatistics.vue";
 import DatabaseLoader from "./DatabaseLoader.vue";
 import axios from "axios";
 import { ChessGame } from "../api/backendApi";
+import Vue from "vue";
 
-export default {
+export default Vue.extend({
   name: "GamesTable",
   components: {
     ChessboardWrapper,
@@ -80,15 +79,15 @@ export default {
   },
   methods: {
     addGames(gamesFromDb: ChessGame[]) {
-      for (let i = 0; i < gamesFromDb.length; i++) {
-        this.games.push(gamesFromDb[i]);
-      }
+      gamesFromDb.forEach((game: ChessGame) => {
+        this.games.push(game);
+      });
       this.filterGames();
     },
 
     onGameClick(game: ChessGame) {
       axios({
-        url: "http://localhost:8080/api/getChessGame",
+        url: "/api/getGame",
         method: "GET",
         params: {
           ID: game.id,
@@ -99,12 +98,13 @@ export default {
     },
 
     onDelete() {
-      var ids = [];
-      for (let i = 0; i < this.displayedGames.length; i++) {
-        ids.push(this.displayedGames[i].id);
-      }
+      let ids = [];
+      this.displayedGames.forEach((game: ChessGame) => {
+        ids.push(game.id);
+      });
+
       axios({
-        url: "http://localhost:8080/api/deleteGames",
+        url: "/api/deleteGames",
         method: "POST",
         data: ids,
       }).then(() => {
@@ -114,7 +114,7 @@ export default {
 
     reloadGames() {
       axios({
-        url: "http://localhost:8080/api/getChessGames",
+        url: "/api/getGames",
         method: "GET",
       }).then((response) => {
         this.games = [];
@@ -123,33 +123,51 @@ export default {
     },
 
     filterGames() {
-      var newDisplayedGames = [];
-      for (let i = 0; i < this.games.length; i++) {
-        const game = this.games[i];
+      let newDisplayedGames = [];
 
+      this.games.forEach((game: ChessGame) => {
         if (this.shouldDisplayGame(game)) {
           newDisplayedGames.push(game);
         }
-      }
-
+      });
       this.displayedGames = newDisplayedGames;
     },
 
-    shouldDisplayGame(game: ChessGame) {
+    shouldDisplayGame(game: ChessGame): boolean {
+      return (
+        this.containsName(game) &&
+        this.containsEco(game) &&
+        this.containsTournament(game)
+      );
+    },
+
+    containsTournament(game: ChessGame): boolean {
+      if (!this.tournamentSearch) {
+        return true;
+      }
       if (
-        game.tournament == null ||
-        !game.tournament
+        game.tournament &&
+        game.tournament
           .toLowerCase()
           .includes(this.tournamentSearch.toLowerCase())
       ) {
-        return false;
+        return true;
+      }
+      return false;
+    },
+    containsEco(game: ChessGame): boolean {
+      if (!this.openingSearch) {
+        return true;
       }
       if (
-        game.eco == null ||
-        !game.eco.toLowerCase().includes(this.openingSearch.toLowerCase())
+        game.eco &&
+        game.eco.toLowerCase().includes(this.openingSearch.toLowerCase())
       ) {
-        return false;
+        return true;
       }
+      return false;
+    },
+    containsName(game: ChessGame): boolean {
       if (
         !game.whiteName.toLowerCase().includes(this.nameSearch.toLowerCase()) &&
         !game.blackName.toLowerCase().includes(this.nameSearch.toLowerCase())
@@ -159,6 +177,7 @@ export default {
       return true;
     },
   },
+
   mounted() {
     this.reloadGames();
   },
@@ -170,11 +189,11 @@ export default {
       openingSearch: "",
       ignoreColours: false,
       chosenGame: "",
-      games: [],
-      displayedGames: [],
+      games: [] as ChessGame[],
+      displayedGames: [] as ChessGame[],
     };
   },
-};
+});
 </script>
 
 <style>
@@ -187,11 +206,16 @@ th {
   font-size: 12px;
   margin: 5px;
 }
-.tableSearchFilters {
+.input {
   margin: 10px 10px;
+  width: 200px;
+}
+.labelBold {
+  font-weight: bold;
+  margin-left: 10px;
 }
 .filterPanel {
-  margin: 5px, 5px;
+  margin-left: 10px;
   text-align: left;
 }
 table {
@@ -205,9 +229,8 @@ table {
 .dataRow:hover {
   background-color: lightgray;
 }
-.buttonStyle {
-  display: inline-block;
-  cursor: pointer;
-  margin: 10px;
+.buttonLeft {
+  text-align: left;
+  margin-left: 10px;
 }
 </style>

@@ -8,6 +8,19 @@ export class ChessGame {
     eco: string;
     tournament: string;
     date: string;
+    errorMessage: string
+}
+
+export enum PgnTag {
+    BLACK_NAME = "Black",
+    WHITE_NAME = "White",
+    BLACK_ELO = "BlackElo",
+    WHITE_ELO = "WhiteElo",
+    TOURNAMENT = "Event",
+    RESULT = "Result",
+    ROUND = "Round",
+    ECO = "ECO",
+    DATE = "Date",
 }
 
 export enum Result {

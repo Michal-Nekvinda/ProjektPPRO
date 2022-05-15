@@ -3,22 +3,20 @@
     <form>
       <input
         id="fileChooser"
-        class="buttonStyle"
         type="file"
         accept=".pgn"
         @change="onFileSelected"
       />
     </form>
     <div>
-      <button class="buttonStyle" @click="onUpload" v-if="selectedFile != null">
-        Nahrát
-      </button>
+      <button @click="onUpload" v-if="selectedFile">Nahrát</button>
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
+
 export default {
   name: "DatabaseLoader",
   data() {
@@ -36,7 +34,7 @@ export default {
 
     onUpload() {
       axios({
-        url: "http://localhost:8080/api/database",
+        url: "/api/saveGames",
         method: "POST",
         data: this.formData,
         headers: {
@@ -56,11 +54,12 @@ export default {
 <style>
 .fileLoader {
   text-align: left;
-  margin: 2px, 5px;
+  margin-left: 10px;
 }
-.buttonStyle {
+.button {
   display: inline-block;
   text-align: left;
   cursor: pointer;
+  margin: 10px;
 }
 </style>

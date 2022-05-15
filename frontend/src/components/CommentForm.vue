@@ -1,21 +1,25 @@
 <template>
-  <div class="modal-overlay">
+  <div class="modalOverlay">
     <div class="modalComment">
       <h4>Vložit komentář</h4>
       <input
+        class="wideInput"
         type="text"
         placeholder="Vložit komentář k tahu..."
-        class="tableSearchFilters"
         v-model="comment"
       />
-      <button @click="onCloseModal(true)">Vložit</button>
-      <button @click="onCloseModal(false)">Zrušit</button>
+      <div>
+        <button class="button" @click="onCloseModal(true)">Vložit</button>
+        <button class="button" @click="onCloseModal(false)">Zrušit</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-export default {
+import Vue from "vue";
+
+export default Vue.extend({
   name: "SaveGameForm",
   data() {
     return {
@@ -24,14 +28,15 @@ export default {
   },
   methods: {
     onCloseModal(save: boolean) {
-      return this.$parent.onCloseModalComment(this.comment, save);
+      this.$parent.onCloseModalComment(this.comment, save);
+      this.comment = "";
     },
   },
-};
+});
 </script>
 
 <style>
-.modal-overlay {
+.modalOverlay {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -41,13 +46,14 @@ export default {
   justify-content: center;
   background-color: rgba(211, 211, 211, 0.7);
 }
-
 .modalComment {
-  text-align: center;
   background-color: white;
   height: 200px;
   width: 400px;
   margin-top: 10%;
-  padding: 10px 0;
+  padding: 10px;
+}
+.wideInput {
+  width: 300px;
 }
 </style>

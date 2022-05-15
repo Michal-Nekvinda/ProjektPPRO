@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <label>Výběr statistiky pro partie:</label>
+  <div class="left">
+    <label class="labelWide">Výběr statistiky pro partie:</label>
     <select v-model="selected" @change="onStatChange">
       <option
         v-for="stat in statisticsNames"
@@ -10,11 +10,16 @@
         {{ stat.name }}
       </option>
     </select>
-    <button @click="onStatChange" v-if="this.selected != 0">Obnovit</button>
-    <label v-if="showNumberOfRecordsChoice()"
-      >Počet záznamů
-      <input type="number" min="1" step="1" v-model="numberOfRecords" />
-    </label>
+    <div v-show="showNumberOfRecordsChoice()">
+      <label class="labelWide">Počet záznamů: </label>
+      <input
+        type="number"
+        min="1"
+        step="1"
+        v-model="numberOfRecords"
+        @change="onStatChange"
+      />
+    </div>
     <table>
       <tr>
         <th
@@ -30,27 +35,36 @@
         </td>
       </tr>
     </table>
+    <div>
+      <button class="button" @click="onStatChange" v-show="this.selected != 0">
+        Obnovit
+      </button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { ChessGame, Result } from "./../api/backendApi";
-export default {
+import Vue from "vue";
+
+export default Vue.extend({
   name: "GamesStatistics",
   props: {
     games: Array,
   },
   methods: {
     onStatChange() {
-      console.log("dd");
       const tableHeader: string[] = this.createHeader();
+      const tableData: Array<Array<string>> = this.createData();
+
       this.displayedStatistics = new Statistics();
       this.displayedStatistics.addHeader(tableHeader);
-      const tableData: ChessGame[] = this.createData();
+
       tableData.forEach((row) => {
         this.displayedStatistics.addDataRow(row);
       });
     },
+
     createHeader() {
       switch (this.selected) {
         case StatisticsType.Openings:
@@ -61,6 +75,7 @@ export default {
           return ["Hráč", "Body", "Úspěšnost (%)"];
       }
     },
+
     createData(): Array<Array<string>> {
       switch (this.selected) {
         case StatisticsType.Openings:
@@ -71,6 +86,7 @@ export default {
           return this.getBestPlayers();
       }
     },
+
     getMostPlayedOpenings() {
       let openingsCount = {};
       let games = 0;
@@ -83,19 +99,26 @@ export default {
         }
       });
 
-      var rows = Object.keys(openingsCount).map(function (key) {
+      const rows = Object.keys(openingsCount).map(function (key) {
         return [key, openingsCount[key], (openingsCount[key] / games) * 100];
       });
 
       return this.sortAndSliceTableRows(rows);
     },
+
     getSuccessRateByPieceColor() {
       let pointsPerPiece = {};
+      pointsPerPiece[Result.WHITE_WIN] = 0;
+      pointsPerPiece[Result.DRAW] = 0;
+      pointsPerPiece[Result.BLACK_WIN] = 0;
+
+      if (this.games.length === 0) {
+        return [];
+      }
+
       this.games.forEach((game: ChessGame) => {
         if (game.result) {
-          pointsPerPiece[game.result] = pointsPerPiece[game.result]
-            ? pointsPerPiece[game.result] + 1
-            : 1;
+          pointsPerPiece[game.result] = pointsPerPiece[game.result] + 1;
         }
       });
       const successRate =
@@ -111,6 +134,7 @@ export default {
         ],
       ];
     },
+
     getBestPlayers() {
       let playersPoints = {};
       this.games.forEach((game: ChessGame) => {
@@ -131,7 +155,7 @@ export default {
         }
       });
 
-      var rows = Object.keys(playersPoints).map(function (key) {
+      const rows = Object.keys(playersPoints).map(function (key) {
         return [
           key,
           playersPoints[key][0] + "/" + playersPoints[key][1],
@@ -141,20 +165,22 @@ export default {
 
       return this.sortAndSliceTableRows(rows);
     },
+
     getPointsForPlayers(result: string) {
       if (result === Result.DRAW) {
         return [0.5, 0.5];
       }
       return result === Result.WHITE_WIN ? [1, 0] : [0, 1];
     },
+
     sortAndSliceTableRows(rows: any[][]) {
       rows.sort(function (first, second) {
         return second[2] - first[2];
       });
 
-      // Create a new array with only the first 5 rows
       return rows.slice(0, this.numberOfRecords);
     },
+
     showNumberOfRecordsChoice() {
       if (
         this.selected === StatisticsType.Openings ||
@@ -165,6 +191,7 @@ export default {
       return false;
     },
   },
+
   data() {
     return {
       selected: StatisticsType.None,
@@ -177,7 +204,8 @@ export default {
       numberOfRecords: 5,
     };
   },
-};
+});
+
 const StatisticsType = {
   None: 0,
   Openings: 1,
@@ -187,7 +215,7 @@ const StatisticsType = {
 
 class Statistics {
   header: string[];
-  data: ChessGame[];
+  data: string[];
   constructor() {
     this.header = [];
     this.data = [];
@@ -195,9 +223,26 @@ class Statistics {
   addHeader(header: string[]) {
     this.header = header;
   }
-  addDataRow(rowData: ChessGame) {
+  addDataRow(rowData: string) {
     this.data.push(rowData);
   }
 }
 </script>
+
+<style>
+.left {
+  text-align: left;
+  margin-top: 20px;
+  margin-left: 10px;
+}
+.labelWide {
+  text-align: left;
+  margin-left: 10px;
+  margin-right: 5px;
+  margin-bottom: 15px;
+  display: inline-block;
+  padding: 2px, 2px, 2px, 2px;
+  width: 200px;
+}
+</style>
 
