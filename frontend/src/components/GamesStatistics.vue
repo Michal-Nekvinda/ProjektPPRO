@@ -1,5 +1,5 @@
 <template>
-  <div class="left">
+  <div class="marginTop">
     <label class="labelWide">Výběr statistiky pro partie:</label>
     <select v-model="selected" @change="onStatChange">
       <option
@@ -36,7 +36,11 @@
       </tr>
     </table>
     <div>
-      <button class="button" @click="onStatChange" v-show="this.selected != 0">
+      <button
+        class="buttonNoMargin"
+        @click="onStatChange"
+        v-show="this.selected != 0"
+      >
         Obnovit
       </button>
     </div>
@@ -230,19 +234,17 @@ class Statistics {
 </script>
 
 <style>
-.left {
-  text-align: left;
-  margin-top: 20px;
-  margin-left: 10px;
-}
 .labelWide {
   text-align: left;
-  margin-left: 10px;
   margin-right: 5px;
   margin-bottom: 15px;
   display: inline-block;
   padding: 2px, 2px, 2px, 2px;
   width: 200px;
+}
+.buttonNoMargin {
+  display: inline-block;
+  cursor: pointer;
 }
 </style>
 

@@ -1,12 +1,12 @@
 <template>
-  <div class="left">
+  <div class="marginWrapper">
     <label class="labelBold">{{ this.createHeader() }}</label>
     <div class="labelFixed">
       <label v-show="this.currentMoveIndex > 0">{{
         this.createLastMoveLabel()
       }}</label>
     </div>
-    <div class="left">
+    <div class="marginTop">
       <div class="chessBoardStyle" id="chessboard" style="width: 400px"></div>
       <textarea
         class="textArea"
@@ -18,7 +18,7 @@
       >
       </textarea>
     </div>
-    <div class="controlPanel">
+    <div class="bla">
       <button class="button" @click="newGame">Nová hra</button>
       <button class="button" @click="moveBackward" v-show="this.loadedGame">
         Předchozí
@@ -253,9 +253,6 @@ export const States = {
 </script>
 
 <style>
-.controlPanel {
-  text-align: left;
-}
 .chessBoardStyle {
   display: inline-block;
   text-align: left;
@@ -266,11 +263,12 @@ export const States = {
   resize: none;
 }
 .labelFixed {
-  text-align: left;
-  margin-left: 10px;
   height: 10px;
 }
-.left2 {
-  text-align: left;
+.marginWrapper {
+  margin-top: 30px;
+}
+.bla {
+  margin-left: -10px;
 }
 </style>

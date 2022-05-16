@@ -1,5 +1,5 @@
 <template>
-  <div class="fileLoader">
+  <div>
     <form>
       <input
         id="fileChooser"
@@ -8,7 +8,7 @@
         @change="onFileSelected"
       />
     </form>
-    <div>
+    <div class="fileLoader">
       <button @click="onUpload" v-if="selectedFile">Nahrát</button>
     </div>
   </div>
@@ -53,12 +53,10 @@ export default {
 
 <style>
 .fileLoader {
-  text-align: left;
-  margin-left: 10px;
+  margin-top: 10px;
 }
 .button {
   display: inline-block;
-  text-align: left;
   cursor: pointer;
   margin: 10px;
 }

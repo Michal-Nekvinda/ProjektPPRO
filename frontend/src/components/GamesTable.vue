@@ -1,10 +1,10 @@
 <template>
   <div>
     <database-loader />
-    <div class="left">
+    <div class="marginTop">
       <label class="labelBold">Seznam partií:</label>
     </div>
-    <div class="filterPanel">
+    <div>
       <label>Najít:</label>
       <input
         type="text"
@@ -54,7 +54,7 @@
         <td>{{ game.tournament }}</td>
       </tr>
     </table>
-    <div class="buttonLeft">
+    <div>
       <button @click="onDelete">Smazat vybrané partie</button>
     </div>
     <chessboard-wrapper ref="chessboardWrapper" />
@@ -212,14 +212,9 @@ th {
 }
 .labelBold {
   font-weight: bold;
-  margin-left: 10px;
-}
-.filterPanel {
-  margin-left: 10px;
-  text-align: left;
 }
 table {
-  margin: 0px 0px 20px 10px;
+  margin: 0px 0px 10px;
   border-collapse: collapse;
   width: 70%;
 }
@@ -229,8 +224,7 @@ table {
 .dataRow:hover {
   background-color: lightgray;
 }
-.buttonLeft {
-  text-align: left;
-  margin-left: 10px;
+.marginTop {
+  margin-top: 20px;
 }
 </style>

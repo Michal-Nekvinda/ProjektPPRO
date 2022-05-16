@@ -147,11 +147,6 @@ export default {
   display: inline-block;
   padding: 2px, 2px, 2px, 2px;
 }
-.button {
-  margin-right: 30px;
-  margin-top: 30px;
-  display: inline-block;
-}
 .center {
   text-align: center;
 }

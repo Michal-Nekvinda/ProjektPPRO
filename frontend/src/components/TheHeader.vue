@@ -1,12 +1,18 @@
 <template>
- <h1> {{label}} </h1>
+  <h1 class="center">{{ label }}</h1>
 </template>
 
 <script>
 export default {
-    name: 'TheHeader',
-    props: {
-        label: String
-    }
-}
+  name: "TheHeader",
+  props: {
+    label: String,
+  },
+};
 </script>
+<style>
+.center {
+  text-align: center;
+}
+</style>
+
