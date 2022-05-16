@@ -10,6 +10,26 @@
         {{ stat.name }}
       </option>
     </select>
+    <div style="display: inline" v-show="showRadio()">
+      <input
+        type="radio"
+        id="points"
+        name="choice"
+        value="3"
+        v-model="successRateVariant"
+        @change="onStatChange"
+      />
+      <label for="points">Dle počtu bodů</label>
+      <input
+        type="radio"
+        id="percentage"
+        name="choice"
+        value="2"
+        v-model="successRateVariant"
+        @change="onStatChange"
+      />
+      <label for="percentage">Procentuálně</label>
+    </div>
     <div v-show="showNumberOfRecordsChoice()">
       <label class="labelWide">Počet záznamů: </label>
       <input
@@ -107,7 +127,7 @@ export default Vue.extend({
         return [key, openingsCount[key], (openingsCount[key] / games) * 100];
       });
 
-      return this.sortAndSliceTableRows(rows);
+      return this.sortAndSliceTableRows(rows, 2);
     },
 
     getSuccessRateByPieceColor() {
@@ -164,10 +184,11 @@ export default Vue.extend({
           key,
           playersPoints[key][0] + "/" + playersPoints[key][1],
           (playersPoints[key][0] / playersPoints[key][1]) * 100,
+          playersPoints[key][0],
         ];
       });
 
-      return this.sortAndSliceTableRows(rows);
+      return this.sortAndSliceTableRows(rows, this.successRateVariant);
     },
 
     getPointsForPlayers(result: string) {
@@ -177,9 +198,9 @@ export default Vue.extend({
       return result === Result.WHITE_WIN ? [1, 0] : [0, 1];
     },
 
-    sortAndSliceTableRows(rows: any[][]) {
+    sortAndSliceTableRows(rows: any[][], sortByColumn: number) {
       rows.sort(function (first, second) {
-        return second[2] - first[2];
+        return second[sortByColumn] - first[sortByColumn];
       });
 
       return rows.slice(0, this.numberOfRecords);
@@ -194,6 +215,9 @@ export default Vue.extend({
       }
       return false;
     },
+    showRadio() {
+      return this.selected === StatisticsType.Players;
+    },
   },
 
   data() {
@@ -206,6 +230,7 @@ export default Vue.extend({
       ],
       displayedStatistics: new Statistics(),
       numberOfRecords: 5,
+      successRateVariant: 2,
     };
   },
 });
@@ -228,7 +253,7 @@ class Statistics {
     this.header = header;
   }
   addDataRow(rowData: string) {
-    this.data.push(rowData);
+    this.data.push(rowData.slice(0, this.header.length));
   }
 }
 </script>
