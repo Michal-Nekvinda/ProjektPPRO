@@ -42,7 +42,7 @@
       <tr
         class="dataRow"
         @click="onGameClick(game)"
-        v-for="game in displayedGames"
+        v-for="game in gamesOnPage"
         :key="game.id"
       >
         <td>{{ game.whiteName }}</td>
@@ -54,6 +54,21 @@
         <td>{{ game.tournament }}</td>
       </tr>
     </table>
+    <div v-show="displayedGames.length > gamesPerPage">
+      <paginate
+        v-model="pageSelected"
+        :page-count="pageCount"
+        :page-range="pageCount"
+        :prev-text="'Předchozí'"
+        :next-text="'Další'"
+        :container-class="'pagination'"
+        :page-class="'page-item'"
+        :prev-class="'page-item'"
+        :next-class="'page-item'"
+        :click-handler="onPageClick"
+      >
+      </paginate>
+    </div>
     <div>
       <button @click="onDelete">Smazat vybrané partie</button>
     </div>
@@ -69,6 +84,7 @@ import DatabaseLoader from "./DatabaseLoader.vue";
 import axios from "axios";
 import { ChessGame } from "../api/backendApi";
 import Vue from "vue";
+import Paginate from "vuejs-paginate";
 
 export default Vue.extend({
   name: "GamesTable",
@@ -76,6 +92,7 @@ export default Vue.extend({
     ChessboardWrapper,
     GamesStatistics,
     DatabaseLoader,
+    Paginate,
   },
   methods: {
     addGames(gamesFromDb: ChessGame[]) {
@@ -131,6 +148,11 @@ export default Vue.extend({
         }
       });
       this.displayedGames = newDisplayedGames;
+      this.pageCount = Math.ceil(
+        this.displayedGames.length / this.gamesPerPage
+      );
+      this.pageSelected = 1;
+      this.gamesOnPage = this.displayedGames.slice(0, this.gamesPerPage);
     },
 
     shouldDisplayGame(game: ChessGame): boolean {
@@ -176,6 +198,14 @@ export default Vue.extend({
       }
       return true;
     },
+
+    onPageClick(pageNum: number) {
+      this.pageSelected = pageNum;
+      this.gamesOnPage = this.displayedGames.slice(
+        (pageNum - 1) * this.gamesPerPage,
+        pageNum * this.gamesPerPage
+      );
+    },
   },
 
   mounted() {
@@ -191,6 +221,10 @@ export default Vue.extend({
       chosenGame: "",
       games: [] as ChessGame[],
       displayedGames: [] as ChessGame[],
+      gamesOnPage: [] as ChessGame[],
+      pageCount: 10,
+      gamesPerPage: 25,
+      pageSelected: 1,
     };
   },
 });
@@ -226,5 +260,25 @@ table {
 }
 .marginTop {
   margin-top: 20px;
+}
+.pagination {
+  display: inline-block;
+  margin-left: -40px;
+  margin-top: -7px;
+}
+.page-item {
+  list-style: none;
+  color: black;
+  float: left;
+  padding: 5px 10px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+  border: 1px solid lightgrey;
+}
+.page-item:hover:not(.active) {
+  background-color: lightgrey;
+}
+.active {
+  background-color: lightblue;
 }
 </style>
