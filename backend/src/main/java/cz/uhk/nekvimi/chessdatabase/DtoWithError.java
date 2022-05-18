@@ -1,7 +1,7 @@
 package cz.uhk.nekvimi.chessdatabase;
 
 public class DtoWithError {
-    private String errorMessage;
+    String errorMessage;
 
     public String getErrorMessage() {
         return errorMessage;

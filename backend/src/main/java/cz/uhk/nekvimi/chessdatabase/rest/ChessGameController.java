@@ -20,7 +20,7 @@ public class ChessGameController {
         this.repository = repository;
     }
 
-    @GetMapping("/api/getChessGames")
+    @GetMapping("/api/getGames")
     public List<ChessGamePreviewDto> findAll() {
         var gamesDb = repository.findAll();
         var gamesDto = new ArrayList<ChessGamePreviewDto>();
@@ -30,7 +30,7 @@ public class ChessGameController {
         return gamesDto;
     }
 
-    @GetMapping("/api/getChessGame")
+    @GetMapping("/api/getGame")
     public String getChessGame(@RequestParam("ID") Long id) {
         var game = repository.findById(id).get();
         return game.getChessGameInfo().getRawGameData();
@@ -43,21 +43,19 @@ public class ChessGameController {
         }
     }
 
-    @PostMapping("/api/save")
-    public ChessGamePreviewDto saveGame(String game) {
-        var chessGame = databaseParser.parseToChessGame(game);
-        var chessGameSaved = repository.save(converter.convertToChessGameDb(chessGame));
-        return new ChessGamePreviewDto(chessGameSaved);
+    @PostMapping("/api/saveNewGame")
+    public ChessGamePreviewDto saveNewGame(@RequestBody String game) {
+        databaseParser = new PgnDatabaseParser();
+        return saveToDb(game, databaseParser, "\n\n");
     }
 
-    @PostMapping("/api/database")
+    @PostMapping("/api/saveGames")
     public List<ChessGamePreviewDto> saveGames(@RequestParam("file") MultipartFile pgnFile) {
         databaseParser = new PgnDatabaseParser();
-        converter = new PgnGameConverter();
         List<ChessGamePreviewDto> gameDtos = new ArrayList<>();
         try {
             for (String game : databaseParser.splitDbToIndividualGames(pgnFile.getInputStream())) {
-                gameDtos.add(saveGame(game));
+                gameDtos.add(saveToDb(game, databaseParser, Constants.gameHeaderSeparator));
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -65,11 +63,11 @@ public class ChessGameController {
         return gameDtos;
     }
 
-
-    @GetMapping("/api/deleteAll")
-    public boolean deleteAll(){
-        repository.deleteAll();
-        return true;
+    private ChessGamePreviewDto saveToDb(String game, ChessDatabaseParser<PgnTag, String> databaseParser,
+                                         String separator) {
+        converter = new PgnGameConverter();
+        var chessGame = databaseParser.parseToChessGame(game, separator);
+        var chessGameSaved = repository.save(converter.convertToChessGameDb(chessGame));
+        return new ChessGamePreviewDto(chessGameSaved);
     }
-
 }

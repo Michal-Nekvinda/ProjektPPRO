@@ -6,17 +6,26 @@ import javax.persistence.Id;
 
 @Entity
 public class PlayerInfo {
-    @Id
-    @GeneratedValue
     long id;
     String name;
     String elo;
 
     public PlayerInfo() {
     }
+
     public PlayerInfo(String name, String elo) {
         this.name = name;
         this.elo = elo;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    @Id
+    @GeneratedValue
+    public long getId() {
+        return id;
     }
 
     public String getName() {
