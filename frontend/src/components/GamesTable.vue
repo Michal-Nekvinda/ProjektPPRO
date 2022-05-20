@@ -71,6 +71,7 @@
     </div>
     <div>
       <button @click="onDelete">Smazat vybrané partie</button>
+      <button @click="onExport" class="button">Exportovat databázi</button>
     </div>
     <chessboard-wrapper ref="chessboardWrapper" />
     <games-statistics v-bind:games="this.displayedGames" />
@@ -205,6 +206,21 @@ export default Vue.extend({
         (pageNum - 1) * this.gamesPerPage,
         pageNum * this.gamesPerPage
       );
+    },
+
+    onExport() {
+      axios({
+        url: "/api/exportGames",
+        method: "GET",
+        responseType: "blob",
+      }).then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "export.pgn");
+        document.body.appendChild(link);
+        link.click();
+      });
     },
   },
 

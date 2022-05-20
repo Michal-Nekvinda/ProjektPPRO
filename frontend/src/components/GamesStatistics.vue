@@ -115,7 +115,7 @@ export default Vue.extend({
       let openingsCount = {};
       let games = 0;
       this.games.forEach((game: ChessGame) => {
-        if (game.eco) {
+        if (game.eco && game.eco !== "N/A") {
           openingsCount[game.eco] = openingsCount[game.eco]
             ? openingsCount[game.eco] + 1
             : 1;

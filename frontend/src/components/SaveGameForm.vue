@@ -27,6 +27,9 @@
           <option value="0-1">0-1</option>
         </select>
       </div>
+      <div>
+        <label class="labelError">{{ this.errorMessage }}</label>
+      </div>
       <h5>Nepovinné položky</h5>
       <div>
         <label class="label">Zahájení:</label>
@@ -84,11 +87,16 @@ export default {
   data() {
     return {
       createdGame: new ChessGame(),
+      errorMessage: "",
     };
   },
   methods: {
+    clearError() {
+      this.errorMessage = "";
+    },
     onCloseModal(save: boolean) {
       if (!save) {
+        this.clearError();
         this.$parent.onCloseModalSaveGame(undefined);
         return;
       }
@@ -106,9 +114,11 @@ export default {
         const gameInResponse: ChessGame = response.data;
 
         if (gameInResponse.errorMessage) {
-          console.log(gameInResponse.errorMessage);
+          this.errorMessage = gameInResponse.errorMessage;
+        } else {
+          this.clearError();
+          this.$parent.onCloseModalSaveGame(gameInResponse);
         }
-        this.$parent.onCloseModalSaveGame(gameInResponse);
       });
     },
     createPgn(createdGame: ChessGame): string {
@@ -149,5 +159,12 @@ export default {
 }
 .center {
   text-align: center;
+}
+.labelError {
+  margin-right: 20px;
+  margin-bottom: 10px;
+  margin-top: 20px;
+  color: red;
+  font-weight: bold;
 }
 </style>

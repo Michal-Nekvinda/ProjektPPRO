@@ -18,7 +18,7 @@
       >
       </textarea>
     </div>
-    <div class="bla">
+    <div class="minusLeft">
       <button class="button" @click="newGame">Nová hra</button>
       <button class="button" @click="moveBackward" v-show="this.loadedGame">
         Předchozí
@@ -268,7 +268,7 @@ export const States = {
 .marginWrapper {
   margin-top: 30px;
 }
-.bla {
+.minusLeft {
   margin-left: -10px;
 }
 </style>
