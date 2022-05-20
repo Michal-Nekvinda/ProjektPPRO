@@ -1,6 +1,5 @@
 package cz.uhk.nekvimi.chessdatabase.dto;
 
-import cz.uhk.nekvimi.chessdatabase.DtoWithError;
 import cz.uhk.nekvimi.chessdatabase.entity.ChessGameDb;
 
 public class ChessGamePreviewDto extends DtoWithError {
@@ -15,6 +14,10 @@ public class ChessGamePreviewDto extends DtoWithError {
     String date;
 
     public ChessGamePreviewDto() {
+    }
+
+    public ChessGamePreviewDto(String error) {
+        this.setErrorMessage(error);
     }
 
     public ChessGamePreviewDto(ChessGameDb gameDb) {

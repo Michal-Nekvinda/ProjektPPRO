@@ -1,4 +1,4 @@
-package cz.uhk.nekvimi.chessdatabase;
+package cz.uhk.nekvimi.chessdatabase.enums;
 
 public enum PgnTag {
     BLACK_NAME("Black"),

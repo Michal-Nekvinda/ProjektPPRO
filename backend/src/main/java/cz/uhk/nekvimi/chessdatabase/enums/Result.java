@@ -1,4 +1,4 @@
-package cz.uhk.nekvimi.chessdatabase;
+package cz.uhk.nekvimi.chessdatabase.enums;
 
 public enum Result {
     WHITE_WIN("1-0"),
@@ -16,7 +16,11 @@ public enum Result {
     }
 
     public static Result getResult(String result) {
+        if(result == null){
+            return Result.UNKNOWN;
+        }
         var parsed = result.trim().split("-");
+
         if (parsed.length != 2) {
             return Result.UNKNOWN;
         }

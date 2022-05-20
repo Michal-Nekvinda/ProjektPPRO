@@ -1,6 +1,6 @@
 package cz.uhk.nekvimi.chessdatabase.entity;
 
-import cz.uhk.nekvimi.chessdatabase.Result;
+import cz.uhk.nekvimi.chessdatabase.enums.Result;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
