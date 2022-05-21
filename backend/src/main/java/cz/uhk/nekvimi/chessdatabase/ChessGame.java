@@ -2,5 +2,5 @@ package cz.uhk.nekvimi.chessdatabase;
 
 public interface ChessGame {
     String getHeader();
-    String getData();
+    String getBody();
 }

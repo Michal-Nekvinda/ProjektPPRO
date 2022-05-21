@@ -2,12 +2,13 @@ package cz.uhk.nekvimi.chessdatabase;
 
 import cz.uhk.nekvimi.chessdatabase.entity.ChessGameDb;
 import cz.uhk.nekvimi.chessdatabase.enums.Result;
+import cz.uhk.nekvimi.chessdatabase.parsing.PgnGameParts;
 
 public class Validator {
     public static String validateGameDb(ChessGameDb game) {
         var generalError = "Chyba! Partii nelze uložit.";
         if (game == null) {
-            return generalError;
+            return generalError + " Povinné položky musí být vyplněny.";
         }
         if (game.getWhite().getName().equals(PgnGameParts.notAvailable) ||
                 game.getBlack().getName().equals(PgnGameParts.notAvailable)) {

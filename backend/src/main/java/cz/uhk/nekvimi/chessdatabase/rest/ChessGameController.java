@@ -3,10 +3,12 @@ package cz.uhk.nekvimi.chessdatabase.rest;
 import cz.uhk.nekvimi.chessdatabase.*;
 import cz.uhk.nekvimi.chessdatabase.dto.ChessGamePreviewDto;
 import cz.uhk.nekvimi.chessdatabase.entity.ChessGameDb;
-import cz.uhk.nekvimi.chessdatabase.parsers.ChessDatabaseParser;
-import cz.uhk.nekvimi.chessdatabase.parsers.ChessGameParser;
-import cz.uhk.nekvimi.chessdatabase.parsers.PgnDatabaseParser;
-import cz.uhk.nekvimi.chessdatabase.parsers.PgnGameParser;
+import cz.uhk.nekvimi.chessdatabase.export.ChessGameExporter;
+import cz.uhk.nekvimi.chessdatabase.export.PgnGameExporter;
+import cz.uhk.nekvimi.chessdatabase.parsing.ChessDatabaseParser;
+import cz.uhk.nekvimi.chessdatabase.parsing.ChessGameParser;
+import cz.uhk.nekvimi.chessdatabase.parsing.PgnDatabaseParser;
+import cz.uhk.nekvimi.chessdatabase.parsing.PgnGameParser;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,6 +26,9 @@ public class ChessGameController {
 
     public ChessGameController(ChessGameDbRepository repository) {
         this.repository = repository;
+        databaseParser = new PgnDatabaseParser();
+        gameParser = new PgnGameParser();
+        gameExporter = new PgnGameExporter();
     }
 
     @GetMapping("/api/getGames")
@@ -44,7 +49,6 @@ public class ChessGameController {
 
     @GetMapping("/api/exportGames")
     public String exportGames() {
-        gameExporter = new PgnGameExporter();
         var gamesDb = repository.findAll();
         var exportedGames = new ArrayList<String>();
         for (var game : gamesDb) {
@@ -64,15 +68,12 @@ public class ChessGameController {
 
     @PostMapping("/api/saveNewGame")
     public ChessGamePreviewDto saveNewGame(@RequestBody String game) {
-        gameParser = new PgnGameParser();
         var savedGame = gameParser.parseGame(game, "\n\n");
         return saveToDb(savedGame);
     }
 
     @PostMapping("/api/saveGames")
     public List<ChessGamePreviewDto> saveGames(@RequestParam("file") MultipartFile pgnFile) {
-        databaseParser = new PgnDatabaseParser();
-        gameParser = new PgnGameParser();
         List<ChessGamePreviewDto> gameDtos = new ArrayList<>();
 
         try {
@@ -83,7 +84,7 @@ public class ChessGameController {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
         return gameDtos;
     }

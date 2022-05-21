@@ -1,4 +1,4 @@
-package cz.uhk.nekvimi.chessdatabase.parsers;
+package cz.uhk.nekvimi.chessdatabase.parsing;
 
 import cz.uhk.nekvimi.chessdatabase.ChessGame;
 

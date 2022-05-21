@@ -1,4 +1,4 @@
-package cz.uhk.nekvimi.chessdatabase;
+package cz.uhk.nekvimi.chessdatabase.parsing;
 
 import cz.uhk.nekvimi.chessdatabase.enums.PgnTag;
 

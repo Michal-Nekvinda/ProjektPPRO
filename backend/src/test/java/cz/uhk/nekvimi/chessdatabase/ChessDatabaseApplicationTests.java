@@ -1,9 +1,9 @@
 package cz.uhk.nekvimi.chessdatabase;
 
-import cz.uhk.nekvimi.chessdatabase.parsers.ChessDatabaseParser;
-import cz.uhk.nekvimi.chessdatabase.parsers.ChessGameParser;
-import cz.uhk.nekvimi.chessdatabase.parsers.PgnDatabaseParser;
-import cz.uhk.nekvimi.chessdatabase.parsers.PgnGameParser;
+import cz.uhk.nekvimi.chessdatabase.parsing.ChessDatabaseParser;
+import cz.uhk.nekvimi.chessdatabase.parsing.ChessGameParser;
+import cz.uhk.nekvimi.chessdatabase.parsing.PgnDatabaseParser;
+import cz.uhk.nekvimi.chessdatabase.parsing.PgnGameParser;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;

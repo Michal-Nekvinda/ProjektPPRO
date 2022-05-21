@@ -1,4 +1,4 @@
-package cz.uhk.nekvimi.chessdatabase;
+package cz.uhk.nekvimi.chessdatabase.export;
 
 import cz.uhk.nekvimi.chessdatabase.entity.ChessGameDb;
 

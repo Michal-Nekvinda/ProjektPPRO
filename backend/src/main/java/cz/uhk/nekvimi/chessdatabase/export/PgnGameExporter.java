@@ -1,5 +1,6 @@
-package cz.uhk.nekvimi.chessdatabase;
+package cz.uhk.nekvimi.chessdatabase.export;
 
+import cz.uhk.nekvimi.chessdatabase.parsing.PgnGameParts;
 import cz.uhk.nekvimi.chessdatabase.entity.ChessGameDb;
 import cz.uhk.nekvimi.chessdatabase.entity.ChessGameInfo;
 import cz.uhk.nekvimi.chessdatabase.enums.PgnTag;

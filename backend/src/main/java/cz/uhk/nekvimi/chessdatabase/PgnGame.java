@@ -2,11 +2,11 @@ package cz.uhk.nekvimi.chessdatabase;
 
 public class PgnGame implements ChessGame {
     private String header;
-    private String data;
+    private String body;
 
-    public PgnGame(String header, String data){
+    public PgnGame(String header, String body){
         this.header = header;
-        this.data = data;
+        this.body = body;
     }
 
     @Override
@@ -15,7 +15,7 @@ public class PgnGame implements ChessGame {
     }
 
     @Override
-    public String getData() {
-        return data;
+    public String getBody() {
+        return body;
     }
 }
