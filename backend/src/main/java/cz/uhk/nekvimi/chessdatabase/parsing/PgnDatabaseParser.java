@@ -1,8 +1,7 @@
-package cz.uhk.nekvimi.chessdatabase.parsers;
+package cz.uhk.nekvimi.chessdatabase.parsing;
 
 import cz.uhk.nekvimi.chessdatabase.ChessGame;
 import cz.uhk.nekvimi.chessdatabase.PgnGame;
-import cz.uhk.nekvimi.chessdatabase.parsers.ChessDatabaseParser;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,26 +31,29 @@ public class PgnDatabaseParser implements ChessDatabaseParser {
 
             for (String part : partsSplitByEmptyLine) {
                 part = part.trim();
-                if (!part.isEmpty()) {
-                    if (part.charAt(0) == '[') {
-                        //radek s hlavickou
-                        processedGame += part;
-                        continue;
-                    }
-                    if (part.charAt(0) == '{' || part.charAt(0) == '1') {
-                        //radek, kde zacina zapis partie - ulozime partii a zacneme zpracovavat dalsi
-                        listOfGames.add(new PgnGame(processedGame, part));
-                        processedGame = "";
-                        continue;
-                    }
-                    //nerozpoznany radek -> pgn soubor je nevalidni
-                    return null;
+                if (part.isEmpty()) {
+                    continue;
                 }
+                if (part.charAt(0) == '[') {
+                    //radek s hlavickou - mezi hlavickami muze byt i prazdny radek
+                    processedGame = processedGame.isEmpty()
+                            ? processedGame + part
+                            : processedGame + System.lineSeparator() + part;
+                    continue;
+                }
+                if (part.charAt(0) == '{' || part.charAt(0) == '1') {
+                    //radek, kde zacina zapis partie - ulozime partii a zacneme zpracovavat dalsi
+                    listOfGames.add(new PgnGame(processedGame, part));
+                    processedGame = "";
+                    continue;
+                }
+                //nerozpoznany radek -> pgn soubor je nevalidni
+                return null;
             }
             return listOfGames;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
         return null;
     }

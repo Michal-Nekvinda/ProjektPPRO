@@ -1,7 +1,7 @@
-package cz.uhk.nekvimi.chessdatabase.parsers;
+package cz.uhk.nekvimi.chessdatabase.parsing;
 
 import cz.uhk.nekvimi.chessdatabase.ChessGame;
-import cz.uhk.nekvimi.chessdatabase.PgnGameParts;
+import cz.uhk.nekvimi.chessdatabase.PgnGame;
 import cz.uhk.nekvimi.chessdatabase.entity.ChessGameDb;
 import cz.uhk.nekvimi.chessdatabase.entity.ChessGameInfo;
 import cz.uhk.nekvimi.chessdatabase.entity.PlayerInfo;
@@ -12,16 +12,29 @@ import cz.uhk.nekvimi.chessdatabase.enums.Result;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PgnGameConverter {
+public class PgnGameParser implements ChessGameParser {
+    @Override
+    public ChessGameDb parseGame(ChessGame chessGame) {
 
-    public ChessGameDb convertToChessGameDb(ChessGame chessGame) {
         var pgnGameParts = parseToGameParts(chessGame);
+        if (pgnGameParts == null) {
+            return null;
+        }
 
         return new ChessGameDb(
                 getPlayerInfo(pgnGameParts, true),
                 getPlayerInfo(pgnGameParts, false),
                 getChessGameInfo(pgnGameParts),
                 getTournamentInfo(pgnGameParts));
+    }
+
+    @Override
+    public ChessGameDb parseGame(String chessGame, String headerBodySeparator) {
+        var headerAndBody = chessGame.split(headerBodySeparator);
+        if (headerAndBody.length != 2) {
+            return null;
+        }
+        return parseGame(new PgnGame(headerAndBody[0], headerAndBody[1]));
     }
 
     private PlayerInfo getPlayerInfo(PgnGameParts chessGame, boolean white) {
@@ -37,7 +50,7 @@ public class PgnGameConverter {
         return new ChessGameInfo(
                 chessGame.getGamePart(PgnTag.ECO),
                 Result.getResult(chessGame.getGamePart(PgnTag.RESULT)),
-                chessGame.getGamePart(PgnTag.GAME_DATA),
+                chessGame.getGamePart(PgnTag.GAME_BODY),
                 chessGame.getGamePart(PgnTag.DATE));
     }
 
@@ -51,9 +64,9 @@ public class PgnGameConverter {
     private PgnGameParts parseToGameParts(ChessGame game) {
         var pgnGame = new PgnGameParts();
         var headerLines = game.getHeader().split("\n");
-        var body = game.getData();
+        var body = game.getBody();
 
-        pgnGame.setGamePart(PgnTag.GAME_DATA, formatGameString(body));
+        pgnGame.setGamePart(PgnTag.GAME_BODY, formatGameString(body));
 
         for (String line : headerLines) {
             line = line.trim();
