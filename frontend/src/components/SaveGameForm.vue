@@ -101,7 +101,6 @@ export default {
         return;
       }
       const pgn: string = this.createPgn(this.createdGame);
-      this.createdGame = new ChessGame();
 
       axios({
         url: "/api/saveNewGame",
@@ -116,6 +115,7 @@ export default {
         if (gameInResponse.errorMessage) {
           this.errorMessage = gameInResponse.errorMessage;
         } else {
+          this.createdGame = new ChessGame();
           this.clearError();
           this.$parent.onCloseModalSaveGame(gameInResponse);
         }
