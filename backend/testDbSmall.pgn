@@ -1,0 +1,48 @@
+[Event "KPŽD"]
+[Site "?"]
+[Date "2009.11.21"]
+[Round "2"]
+[White "Player 1"]
+[Black "Player 2"]
+[Result "1-0"]
+[ECO "C50"]
+[WhiteElo "1000"]
+[BlackElo "1100"]
+
+{1024MB, Fritz10.ctg} 1. e4 e5 2. Nf3 Nc6 3. Bc4 Bc5 4. O-O Nf6 5. Nc3 O-O 6.d3 d6 7. Bg5 Bg4 8. h3 Bh5 9. Nd5 Nd4 10. Bxf6 gxf6 11. g4 Bg6 12. Nxd4 Bxd413. c3 Bxe4 14. dxe4 Bc5 15. Qf3 f5 16. Qxf5 Qh4 17. Qf3 c6 18. Nf6+ Kg7 19.Nh5+ Kg8 20. Qf6 Qxf6 21. Nxf6+ Kg7 22. Nd7 Rh8 23. Kg2 Rad8 24. b4 Bb6 25.Nxb6 axb6 26. Rfd1 b5 27. Bb3 Rhg8 28. a4 h5 29. axb5 cxb5 30. f3 Kg6 31. Ra7Rd7 32. Bd5 Rb8 33. Bc6 Rdd8 34. Rxb7 Rxb7 35. Bxb7 Rd7 36. Bc6 Rd8 37. Bxb5hxg4 38. hxg4 f6 39. Bd3 Rc8 40. Rc1 Kg5 41. Kg3 Rd8 42. c4 Rd7 43. c5 dxc5 44.Bb5 Rb7 45. Rxc5 Rb6 46. f4+ Kg6 47. fxe5 fxe5 48. Rxe5 Kf6 49. Kf4 Rb7 50. g5+Kg6 51. Rd5 Rf7+ 52. Rf5 Rb7 53. e5 Rxb5 54. Rf6+ Kg7 55. Kf5 Rxb4 56. g6 Rb757. Rf7+ Rxf7+ 58. gxf7 Kxf7 59. e6+ Ke7 60. Ke5 Kf8 61. Kf6 Ke8 62. e7 Kd7 63.Kf7 Kd6 64. e8=Q 1-0
+
+[Event "OPJ sk.B2"]
+[Date "2010.04.12"]
+[Round "?"]
+[White "Player 3"]
+[Black "Player 4"]
+[Result "0-1"]
+[ECO "B43"]
+[WhiteElo "1250"]
+[BlackElo "1597"]
+
+1. e4 c5 2. Nf3 e6 3. d4 cxd4 4. Nxd4 a6 5. Nc3Qc7 6. Be3 Nf6 7. Bd3 Bb4 8. Bd2 Nc6 9. Nb3 b5 10. a3 Be7 11. Be3 O-O 12. f4 d613. Qd2 Bb7 14. O-O-O Nd7 15. Qf2 Bf6 16. Ne2 b4 17. a4 Na5 18. Nxa5 Qxa5 19.b3 Rfc8 20. Ng3 Bc3 21. f5 e5 22. Nh5 Nc5 23. Bxc5 Rxc5 24. Qg3 g6 25. fxg6hxg6 26. Nf6+ Kg7 27. Rdf1 Rh8 28. Qg5 Rc7 29. h4 Bc6 30. Nd5 Bxa4 31. Qf6+ Kh732. Nxc3 {po h5!! by následoval mat v několika tazích} (32. h5 g5 33. Qxg5 Be834. Nf6#) 32... bxc3 33. Kb1 $4 {bxa4} Bxb3 34. cxb3 Qa3 35. Qf2 Qxb3+ 36. Kc1Qa3+ 0-1
+
+[Event "RP-J"]
+[Date "2010.02.07"]
+[Round "?"]
+[White "Player 5"]
+[Black "Player 6"]
+[Result "1/2-1/2"]
+[ECO "B45"]
+[WhiteElo "1250"]
+[BlackElo "1468"]
+
+{1024MB, Fritz10.ctg} 1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 e6 5. Nc3 Bc5 6.Nxc6 bxc6 7. Bd3 Ne7 8. a3 O-O 9. b4 Bd4 10. Bb2 d5 11. O-O Bxc3 12. Bxc3 Ng613. g3 d4 14. Bb2 e5 15. c3 dxc3 16. Bxc3 Bh3 17. Re1 Qd7 18. Bc4 Rad8 19. Qxd7Rxd7 20. Rad1 Rfd8 21. Rxd7 Rxd7 22. Bb3 Rd3 23. Re3 Rxe3 24. fxe3 h6 25. Ba4Bd7 26. Kf2 f6 27. Ke2 Ne7 28. Kd3 Kf8 29. Kc4 Ke8 30. Kc5 Kd8 31. Kd6 Nc8+ 32.Kc5 Kc7 33. Bd1 Nd6 34. Bf3 Be6 35. Bd2 $4 Nc4 $4 36. Bc1 1/2-1/2
+
+[Event "1.LDMD"]
+[Date "2010.10.03"]
+[Round "?"]
+[White "Player 7"]
+[Black "Player 8"]
+[Result "0-1"]
+[ECO "C45"]
+[WhiteElo "1450"]
+[BlackElo "1339"]
+
+1. e4 {[%emt 0:00:00]} e5 2. Nf3 Nc6 3. d4 exd4 4. Nxd4 Bc5 5. Be3 Qf6 6. c3 Nge7 7. Bc4 O-O 8. O-O Bb6 9. Nxc6 Nxc6 10. Bxb6 axb6 11.Nd2 Ne5 12. Qe2 d6 13. Bb3 Qg6 14. f4 Bg4 15. Qe3 Nc6 16. h3 $2 Bd7 17. Rf3Rfe8 18. Raf1 Na5 19. f5 Qf6 20. g4 Nxb3 21. axb3 h6 22. Rg3 Bb5 23. c4 Bc6 24.g5 hxg5 25. Rxg5 Bxe4 26. Nxe4 Rxe4 27. Qxe4 Qxg5+ 28. Kh1 Rb8 29. Rg1 Qh6 30.Qf3 Re8 31. Kh2 Re3 32. Qg4 Rxb3 33. Rg2 Qf6 34. Qe2 Qe5+ 35. Qxe5 dxe5 36. f6g6 37. Re2 Rf3 38. Rxe5 Rxf6 39. Re8+ Kg7 40. Kg3 Rc6 41. b3 b5 42. cxb5 Rc3+43. Kg2 Rxb3 44. Rc8 Rxb5 45. Rxc7 Rb3 46. Kf2 b5 47. Rb7 Kf6 48. Ke2 Ke6 49.Kf2 g5 50. Kg2 f6 51. Rb6+ Kf5 52. Kf2 Ke5 53. Kg2 f5 54. Kf2 Kf4 0-1
