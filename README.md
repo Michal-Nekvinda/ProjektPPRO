@@ -1,4 +1,4 @@
-# ProjektPPRO - Databáze šachových partií
+# Databáze šachových partií
 Pokročilé programování
 
 Michal Nekvinda
